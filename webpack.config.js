@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './src/index.js', // Entry point for your React app
@@ -22,6 +23,12 @@ module.exports = {
             },
         ],
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './public/index.html', // This points to your HTML template file
+            filename: 'index.html', // Output file name in the 'dist' directory
+        }),
+    ],
     devServer: {
         static: {
             directory: path.join(__dirname, 'public'), // Serve static files from 'public' directory
