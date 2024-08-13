@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Gallery from './Gallery';
-import Map from './Map';
+// import Gallery from './Gallery';
+// import Map from './Map';
+import ImageCarousel  from "./ImageCarousel";
 
 const App = () => {
     // console.log("App component is rendering");
@@ -22,8 +23,9 @@ const App = () => {
     return (
         <div>
             <h1>Loggbok</h1>
-            <Gallery images={images} />
-            <Map></Map>
+            <ImageCarousel images={images}></ImageCarousel>
+            {/*<Gallery images={images} />*/}
+            {/*<Map></Map>*/}
         </div>
     );
 };
