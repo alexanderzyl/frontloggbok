@@ -2,29 +2,10 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "./ImageCarousel.css";
 
 // Custom arrow components
-function CustomNextArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-        <div
-            className={className}
-            style={{ ...style, backgroundColor: 'black' }}
-            onClick={onClick}
-        />
-    );
-}
 
-function CustomPrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-        <div
-            className={className}
-            style={{ ...style, backgroundColor: 'black' }}
-            onClick={onClick}
-        />
-    );
-}
 const ImageCarousel = ({images}) => {
     const settings = {
         dots: true,
@@ -34,12 +15,12 @@ const ImageCarousel = ({images}) => {
         slidesToScroll: 1,
         // stop autoplay
         autoplay: false,
-        nextArrow: <CustomNextArrow />,
-        prevArrow: <CustomPrevArrow />
+        arrows: true,
+        accessibility: true,
     };
 
     return (
-        <div style={{ width: "800px", margin: "0 auto" }}>
+        <div style={{ width: "800px", margin: "0 auto", maxHeight: "600px" }}>
             <Slider {...settings}>
                 {images.map((image, index) => (
                     <div key={index} style={{ maxHeight: '400px', maxWidth: '800px', overflow: 'hidden' }}>
