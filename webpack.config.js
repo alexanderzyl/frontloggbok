@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    devtool: false, // Just add this line to turn off source maps
+    // devtool: false, // Just add this line to turn off source maps
     entry: './src/index.js', // Entry point for your React app
     output: {
         path: path.resolve(__dirname, 'dist'),
