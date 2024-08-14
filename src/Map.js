@@ -2,21 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import {createImageMarker} from "./Markers";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-function openNavigation(latitude, longitude) {
-    let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    let url = '';
-
-    if (isIOS) {
-        url = `maps://?saddr=&daddr=${latitude},${longitude}`;
-    } else { // Android and others
-        url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-    }
-
-    window.open(url, '_blank');
-}
 const Map = ({coordinates, selectedImage}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
@@ -39,24 +28,6 @@ const Map = ({coordinates, selectedImage}) => {
             .addTo(map.current);
     }, []);
 
-    // useEffect(() => {
-    //     if(!map.current || !coordinates || coordinates.length === 0) {
-    //         return;
-    //     }
-    //     map.current.flyTo({
-    //         center: coordinates[0],
-    //         essential: true // this animation is considered essential with respect to prefers-reduced-motion
-    //     });
-    //
-    //     if(marker.current) {
-    //         marker.current.remove(); // remove existing marker
-    //     }
-    //
-    //     marker.current = new mapboxgl.Marker()
-    //         .setLngLat([coordinates[0][0], coordinates[0][1]])
-    //         .addTo(map.current);
-    // }, [coordinates]);
-
     useEffect(() => {
         if (!map.current || !selectedImage || typeof selectedImage !== 'object' || selectedImage.longitude === undefined || selectedImage.latitude === undefined) {
             return;
@@ -71,21 +42,7 @@ const Map = ({coordinates, selectedImage}) => {
         }
 
         // create a DOM element and set its properties
-        const div_marker = document.createElement('div');
-
-        const div_image = document.createElement('div');
-        div_image.className = 'marker';
-        div_image.style.backgroundImage = `url(${selectedImage.url})`;
-        div_marker.appendChild(div_image);
-
-        // Create a navigate button
-        const navigateButton = document.createElement('button');
-        navigateButton.className = 'navigate-button';
-        navigateButton.innerHTML = 'Navigate';
-        navigateButton.onclick = function() {
-            openNavigation(selectedImage.latitude, selectedImage.longitude);
-        };
-        div_marker.appendChild(navigateButton);
+        const div_marker = createImageMarker(selectedImage);
 
         marker.current = new mapboxgl.Marker(div_marker)
             .setLngLat([selectedImage.longitude, selectedImage.latitude])
