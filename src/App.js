@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
 // import Gallery from './Gallery';
-// import Map from './Map';
+import Map from './Map';
 import ImageCarousel  from "./ImageCarousel";
 
 const App = () => {
-    // console.log("App component is rendering");
     const [images, setImages] = useState([]);
+    const [coordinates, setCoordinates] = useState([]);
 
     useEffect(() => {
-        // console.log('useEffect has been called');
         fetch('https://backlogbok.onrender.com/api/v1/profiles/2')
             .then(response => response.json())
             .then(data => {
-                // console.log('data:', data);
                 setImages(data.images.slice(0, 10).map(item => ({
-                original: item.url,
-                thumbnail: item.url,})));
+                    original: item.url,
+                    thumbnail: item.url,
+                })));
+                setCoordinates(data.images.slice(0, 10).map(item => [item.longitude, item.latitude]));
             });
     }, []);
-
 
     return (
         <div>
             <h1>Loggbok</h1>
             <ImageCarousel images={images}></ImageCarousel>
-            {/*<Gallery images={images} />*/}
-            {/*<Map></Map>*/}
+            <Map coordinates={coordinates}></Map>
         </div>
     );
 };
