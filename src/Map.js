@@ -6,7 +6,7 @@ import {createImageMarker} from "./Markers";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({selectedImage}) => {
+const Map = ({selectedNp, npInfo}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const marker = useRef(null);
@@ -29,12 +29,12 @@ const Map = ({selectedImage}) => {
     }, []);
 
     useEffect(() => {
-        if (!map.current || !selectedImage || typeof selectedImage !== 'object' || selectedImage.longitude === undefined || selectedImage.latitude === undefined) {
+        if (!map.current || !selectedNp || typeof selectedNp !== 'object' || selectedNp.longitude === undefined || selectedNp.latitude === undefined) {
             return;
         }
         // console.log(selectedImage);
         map.current.flyTo({
-            center: [selectedImage.longitude, selectedImage.latitude],
+            center: [selectedNp.longitude, selectedNp.latitude],
             essential: true // this animation is considered essential with respect to prefers-reduced-motion
         });
         if (marker.current) {
@@ -42,12 +42,12 @@ const Map = ({selectedImage}) => {
         }
 
         // create a DOM element and set its properties
-        const div_marker = createImageMarker(selectedImage);
+        const div_marker = createImageMarker(selectedNp, npInfo);
 
         marker.current = new mapboxgl.Marker(div_marker)
-            .setLngLat([selectedImage.longitude, selectedImage.latitude])
+            .setLngLat([selectedNp.longitude, selectedNp.latitude])
             .addTo(map.current);
-    }, [selectedImage]);
+    }, [npInfo]);
 
     return (
         <div>

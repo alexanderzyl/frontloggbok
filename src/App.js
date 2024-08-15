@@ -4,38 +4,42 @@ import Map from './Map';
 import ImageCarousel  from "./ImageCarousel";
 
 const App = () => {
-    const [coordinates, setCoordinates] = useState([]);
-    const [imagesMetadata, setImagesMetadata] = useState([]);
-    const [selectedImage, setSelectedImage] = useState([]);
-    const [randomize, setRandomize] = useState(0); // <-- Add this line
+    const [navPoints, setNavPoints] = useState([]);
+    const [selectedNp, setSelectedNp] = useState([]);
+    const [npInfo, setNpInfo] = useState([]);
+    const [randomize, setRandomize] = useState(0);
 
     useEffect(() => {
-        fetch('https://backlogbok.onrender.com/api/v1/profiles/2')
+        fetch('https://backlogbok.onrender.com/api/v1/navpoints/')
             .then(response => response.json())
             .then(data => {
-                setImagesMetadata(data.images);
-                let selectedImages = [];
-                selectedImages = data.images.slice(100, 110);
+                setNavPoints(data);
+                // let selectedImages = [];
+                // selectedImages = data.images.slice(100, 110);
                 // setImages(selectedImages.map(item => ({
                 //     original: item.url,
                 //     thumbnail: item.url,
                 // })));
-                setCoordinates(selectedImages.map(item => [item.longitude, item.latitude]));
             });
     }, []);
 
     useEffect(() => {
-        if (imagesMetadata.length > 0) {
-            const randomIndex = Math.floor(Math.random() * imagesMetadata.length);
-            setSelectedImage(imagesMetadata[randomIndex]);
+        if (navPoints && navPoints.length > 0) {
+            const randomIndex = Math.floor(Math.random() * navPoints.length);
+            setSelectedNp(navPoints[randomIndex]);
+            fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${navPoints[randomIndex].id}`)
+                .then(response => response.json())
+                .then(data => {
+                    setNpInfo(data);
+                });
         }
-    }, [randomize]); // <-- Add this line
+    }, [randomize]);
 
     return (
         <div>
             <h1>Loggbok</h1>
-            <Map selectedImage={selectedImage}></Map>
-            <button onClick={() => setRandomize(randomize + 1)}>Select random image!</button>  {/* <-- Add this line */}
+            <Map selectedNp={selectedNp} npInfo={npInfo}></Map>
+            <button onClick={() => setRandomize(randomize + 1)}>Select random image!</button>  {}
         </div>
     );
 };
