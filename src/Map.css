@@ -17,8 +17,12 @@
 
 .image-marker {
     background-size: cover;
-    width: 50px;
+    width: 80px;
     height: 50px;
     /*border-radius: 50%;*/
     cursor: pointer;
+}
+
+.navigate-button{
+    width: 80px;
 }

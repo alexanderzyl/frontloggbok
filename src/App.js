@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import Gallery from './Gallery';
 import Map from './Map';
 import ImageCarousel  from "./ImageCarousel";
 
@@ -14,12 +13,6 @@ const App = () => {
             .then(response => response.json())
             .then(data => {
                 setNavPoints(data);
-                // let selectedImages = [];
-                // selectedImages = data.images.slice(100, 110);
-                // setImages(selectedImages.map(item => ({
-                //     original: item.url,
-                //     thumbnail: item.url,
-                // })));
             });
     }, []);
 
@@ -37,8 +30,9 @@ const App = () => {
 
     return (
         <div>
-            <h1>Loggbok</h1>
+            {/*<h1>Loggbok</h1>*/}
             <Map selectedNp={selectedNp} npInfo={npInfo}></Map>
+            <ImageCarousel npInfo={npInfo}></ImageCarousel>
             <button onClick={() => setRandomize(randomize + 1)}>Select random image!</button>  {}
         </div>
     );
