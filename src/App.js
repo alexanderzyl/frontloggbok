@@ -31,7 +31,7 @@ const App = () => {
     return (
         <div>
             {/*<h1>Loggbok</h1>*/}
-            <Map selectedNp={selectedNp} npInfo={npInfo}></Map>
+            <Map selectedNp={selectedNp} npInfo={npInfo} navPoints={navPoints}></Map>
             <ImageCarousel npInfo={npInfo}></ImageCarousel>
             <button onClick={() => setRandomize(randomize + 1)}>Select random image!</button>  {}
         </div>

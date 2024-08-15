@@ -3,16 +3,16 @@ import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {createImageMarker} from "./Markers";
+import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({selectedNp, npInfo}) => {
+const Map = ({selectedNp, npInfo, navPoints}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const marker = useRef(null);
     const [lng, setLng] = useState(-70.9);
     const [lat, setLat] = useState(42.35);
-    const [zoom, setZoom] = useState(9);
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -20,13 +20,44 @@ const Map = ({selectedNp, npInfo}) => {
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v12',
             center: [lng, lat],
-            zoom: zoom
+            zoom: 9
         });
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+        });
+
+        map.current.addControl(geocoder);
+
+        geocoder.on('result', function (e) {
+            map.current.flyTo({
+                center: e.result.center,
+                essential: true,
+                zoom: 12
+            });});
 
         marker.current = new mapboxgl.Marker()
             .setLngLat([lng, lat])
             .addTo(map.current);
     }, []);
+
+    useEffect(() => {
+        if (!map.current || !navPoints || navPoints.length === 0) {
+            return;
+        }
+        let somePoint = navPoints[Math.floor(Math.random() * navPoints.length)];
+        map.current.flyTo({
+            center: [somePoint.longitude, somePoint.latitude],
+            essential: true
+        })
+        // Add markers to the map
+        navPoints.forEach(point => {
+            new mapboxgl.Marker()
+                .setLngLat([point.longitude, point.latitude])
+                .addTo(map.current);
+        });
+    }, [navPoints]);
 
     useEffect(() => {
         if (!map.current || !selectedNp || typeof selectedNp !== 'object' || selectedNp.longitude === undefined || selectedNp.latitude === undefined) {
@@ -35,10 +66,12 @@ const Map = ({selectedNp, npInfo}) => {
         // console.log(selectedImage);
         map.current.flyTo({
             center: [selectedNp.longitude, selectedNp.latitude],
-            essential: true // this animation is considered essential with respect to prefers-reduced-motion
+            essential: true
         });
         if (marker.current) {
-            marker.current.remove(); // remove existing marker
+            marker.current = new mapboxgl.Marker()
+                .setLngLat([selectedNp.longitude, selectedNp.latitude])
+                .addTo(map.current); // remove existing marker
         }
 
         // create a DOM element and set its properties
