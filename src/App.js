@@ -4,7 +4,6 @@ import Map from './Map';
 import ImageCarousel  from "./ImageCarousel";
 
 const App = () => {
-    const [images, setImages] = useState([]);
     const [coordinates, setCoordinates] = useState([]);
     const [imagesMetadata, setImagesMetadata] = useState([]);
     const [selectedImage, setSelectedImage] = useState([]);
@@ -17,10 +16,10 @@ const App = () => {
                 setImagesMetadata(data.images);
                 let selectedImages = [];
                 selectedImages = data.images.slice(100, 110);
-                setImages(selectedImages.map(item => ({
-                    original: item.url,
-                    thumbnail: item.url,
-                })));
+                // setImages(selectedImages.map(item => ({
+                //     original: item.url,
+                //     thumbnail: item.url,
+                // })));
                 setCoordinates(selectedImages.map(item => [item.longitude, item.latitude]));
             });
     }, []);
@@ -35,8 +34,7 @@ const App = () => {
     return (
         <div>
             <h1>Loggbok</h1>
-            {/*<ImageCarousel images={images}></ImageCarousel>*/}
-            <Map coordinates={coordinates} selectedImage={selectedImage}></Map>
+            <Map selectedImage={selectedImage}></Map>
             <button onClick={() => setRandomize(randomize + 1)}>Select random image!</button>  {/* <-- Add this line */}
         </div>
     );

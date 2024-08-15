@@ -6,7 +6,7 @@ import {createImageMarker} from "./Markers";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({coordinates, selectedImage}) => {
+const Map = ({selectedImage}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const marker = useRef(null);
