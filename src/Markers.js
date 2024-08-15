@@ -23,6 +23,11 @@ export function createImageMarker(selectedNp, npInfo) {
     div_image.style.backgroundImage = `url(${image_url})`;
     div_marker.appendChild(div_image);
 
+    const div_text = document.createElement('div');
+    div_text.className = 'image-text';
+    div_text.innerHTML = selectedNp.name;
+    div_marker.appendChild(div_text);
+
     // Create a navigate button
     const navigateButton = document.createElement('button');
     navigateButton.className = 'navigate-button';
