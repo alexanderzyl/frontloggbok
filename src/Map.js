@@ -7,7 +7,7 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({selectedNp, npInfo, navPoints}) => {
+const Map = ({npInfo, setNpInfo, navPoints}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const marker = useRef(null);
@@ -43,6 +43,7 @@ const Map = ({selectedNp, npInfo, navPoints}) => {
     }, []);
 
     useEffect(() => {
+
         if (!map.current || !navPoints || navPoints.length === 0) {
             return;
         }
@@ -53,34 +54,28 @@ const Map = ({selectedNp, npInfo, navPoints}) => {
         })
         // Add markers to the map
         navPoints.forEach(point => {
+            const popup = new mapboxgl.Popup({ offset: 25 });
+
+            popup.on('open', () => {
+                fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${point.id}`)
+                    .then(response => response.json())
+                    .then(np_data => {
+                        const div_marker = createImageMarker(np_data);
+                        popup.setHTML(div_marker.outerHTML);
+                        setNpInfo(np_data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        popup.setHTML('<div>Error loading data</div>');
+                    });
+            });
+
             new mapboxgl.Marker()
                 .setLngLat([point.longitude, point.latitude])
+                .setPopup(popup)
                 .addTo(map.current);
         });
     }, [navPoints]);
-
-    useEffect(() => {
-        if (!map.current || !selectedNp || typeof selectedNp !== 'object' || selectedNp.longitude === undefined || selectedNp.latitude === undefined) {
-            return;
-        }
-        // console.log(selectedImage);
-        map.current.flyTo({
-            center: [selectedNp.longitude, selectedNp.latitude],
-            essential: true
-        });
-        if (marker.current) {
-            marker.current = new mapboxgl.Marker()
-                .setLngLat([selectedNp.longitude, selectedNp.latitude])
-                .addTo(map.current); // remove existing marker
-        }
-
-        // create a DOM element and set its properties
-        const div_marker = createImageMarker(selectedNp, npInfo);
-
-        marker.current = new mapboxgl.Marker(div_marker)
-            .setLngLat([selectedNp.longitude, selectedNp.latitude])
-            .addTo(map.current);
-    }, [npInfo]);
 
     return (
         <div>

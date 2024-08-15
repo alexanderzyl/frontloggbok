@@ -11,7 +11,7 @@ function openNavigation(latitude, longitude) {
     window.open(url, '_blank');
 }
 
-export function createImageMarker(selectedNp, npInfo) {
+export function createImageMarker(npInfo) {
     const div_marker = document.createElement('div');
 
     const div_image = document.createElement('div');
@@ -25,7 +25,7 @@ export function createImageMarker(selectedNp, npInfo) {
 
     const div_text = document.createElement('div');
     div_text.className = 'image-text';
-    div_text.innerHTML = selectedNp.name;
+    div_text.innerHTML = npInfo.name;
     div_marker.appendChild(div_text);
 
     // Create a navigate button
@@ -33,7 +33,7 @@ export function createImageMarker(selectedNp, npInfo) {
     navigateButton.className = 'navigate-button';
     navigateButton.innerHTML = 'Navigate';
     navigateButton.onclick = function () {
-        openNavigation(selectedNp.latitude, selectedNp.longitude);
+        openNavigation(npInfo.latitude, npInfo.longitude);
     };
     div_marker.appendChild(navigateButton);
     return div_marker;
