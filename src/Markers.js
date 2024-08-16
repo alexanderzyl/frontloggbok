@@ -61,3 +61,9 @@ export function createPoiPopup(poi) {
 
     return div_marker;
 }
+
+export function createNpMarker() {
+    const el = document.createElement('div');
+    el.className = 'marker';
+    return el;
+}

@@ -43,7 +43,11 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
                     });
             });
 
-            const marker = new mapboxgl.Marker()
+            // const el_marker = createNpMarker();
+
+            const el = createNpMarker()
+
+            const marker = new mapboxgl.Marker(el)
                 .setLngLat([point.longitude, point.latitude])
                 .setPopup(popup)
                 .addTo(map.current);
