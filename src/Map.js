@@ -2,15 +2,15 @@ import React, {useEffect, useRef, useState} from 'react';
 import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {createImageMarker} from "./Markers";
+import {createNpMarker, createNpPopup, createPoiPopup} from "./Markers";
 import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({npInfo, setNpInfo, navPoints}) => {
+const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
-    const marker = useRef(null);
+    const markers = useRef([]);
     const [lng, setLng] = useState(-70.9);
     const [lat, setLat] = useState(42.35);
 
@@ -36,11 +36,66 @@ const Map = ({npInfo, setNpInfo, navPoints}) => {
                 essential: true,
                 zoom: 12
             });});
-
-        marker.current = new mapboxgl.Marker()
-            .setLngLat([lng, lat])
-            .addTo(map.current);
     }, []);
+
+    function addNpsMarkers() {
+        // Clear existing markers
+        if(markers.current.length > 0) {
+            markers.current.forEach(marker => {
+                marker.remove();
+            });
+            markers.current = [];
+        }
+        // Add markers to the map
+        navPoints.forEach(point => {
+            const popup = new mapboxgl.Popup({offset: 25});
+
+            popup.on('open', () => {
+                fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${point.id}`)
+                    .then(response => response.json())
+                    .then(np_data => {
+                        const div_marker = createNpPopup(np_data);
+                        popup.setHTML(div_marker.outerHTML);
+                        console.log(np_data);
+                        setNpInfo(np_data);
+                        setMode('poisState');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        popup.setHTML('<div>Error loading data</div>');
+                    });
+            });
+
+            const marker = new mapboxgl.Marker()
+                .setLngLat([point.longitude, point.latitude])
+                .setPopup(popup)
+                .addTo(map.current);
+            markers.current.push(marker);
+        });
+    }
+
+    function addPoisMarkers() {
+        // Clear existing markers
+        if(markers.current.length > 0) {
+            markers.current.forEach(marker => {
+                marker.remove();
+            });
+            markers.current = [];
+        }
+        if (npInfo && Object.keys(npInfo).length > 0) {
+            // Add markers to the map
+            const pois = npInfo.pois;
+            pois.forEach(point => {
+                const popup = new mapboxgl.Popup({offset: 25});
+                const div_marker = createPoiPopup(point);
+                const marker = new mapboxgl.Marker()
+                    .setLngLat([point.longitude, point.latitude])
+                    .setPopup(popup.setHTML(div_marker.outerHTML))
+                    .addTo(map.current);
+                markers.current.push(marker);
+            });
+        }
+    }
 
     useEffect(() => {
 
@@ -52,30 +107,29 @@ const Map = ({npInfo, setNpInfo, navPoints}) => {
             center: [somePoint.longitude, somePoint.latitude],
             essential: true
         })
-        // Add markers to the map
-        navPoints.forEach(point => {
-            const popup = new mapboxgl.Popup({ offset: 25 });
-
-            popup.on('open', () => {
-                fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${point.id}`)
-                    .then(response => response.json())
-                    .then(np_data => {
-                        const div_marker = createImageMarker(np_data);
-                        popup.setHTML(div_marker.outerHTML);
-                        setNpInfo(np_data);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        popup.setHTML('<div>Error loading data</div>');
-                    });
-            });
-
-            new mapboxgl.Marker()
-                .setLngLat([point.longitude, point.latitude])
-                .setPopup(popup)
-                .addTo(map.current);
-        });
+        addNpsMarkers();
     }, [navPoints]);
+
+    useEffect(() => {
+        if(mode === 'poisState') {
+            map.current.flyTo({
+                center: [npInfo.longitude, npInfo.latitude],
+                essential: true,
+                zoom: 13
+            });
+            addPoisMarkers();
+        }
+        else if(mode === 'npsState') {
+            if(npInfo && Object.keys(npInfo).length > 0) {
+                map.current.flyTo({
+                    center: [npInfo.longitude, npInfo.latitude],
+                    essential: true,
+                    zoom: 9
+                });
+            }
+            addNpsMarkers();
+        }
+    }, [mode]);
 
     return (
         <div>

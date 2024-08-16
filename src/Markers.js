@@ -11,7 +11,7 @@ function openNavigation(latitude, longitude) {
     window.open(url, '_blank');
 }
 
-export function createImageMarker(npInfo) {
+export function createNpPopup(npInfo) {
     const div_marker = document.createElement('div');
 
     const div_image = document.createElement('div');
@@ -36,5 +36,28 @@ export function createImageMarker(npInfo) {
         openNavigation(npInfo.latitude, npInfo.longitude);
     };
     div_marker.appendChild(navigateButton);
+    return div_marker;
+}
+
+export function createPoiPopup(poi) {
+    const div_marker = document.createElement('div');
+    const div_name = document.createElement('div');
+    div_name.className = 'poi-name';
+    div_name.innerHTML = poi.name;
+    div_marker.appendChild(div_name);
+
+    const div_description = document.createElement('div');
+    div_description.className = 'poi-description';
+    div_description.innerHTML = poi.description;
+    div_marker.appendChild(div_description);
+
+    // Create a navigate button
+    const navigateButton = document.createElement('button');
+    navigateButton.className = 'navigate-button';
+    navigateButton.innerHTML = 'Navigate';
+    navigateButton.onclick = function () {
+        openNavigation(poi.latitude, poi.longitude);
+    };
+
     return div_marker;
 }
