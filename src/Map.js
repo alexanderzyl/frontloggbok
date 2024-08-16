@@ -13,30 +13,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
     const markers = useRef([]);
     const [lng, setLng] = useState(-70.9);
     const [lat, setLat] = useState(42.35);
-
-    useEffect(() => {
-        if (map.current) return; // initialize map only once
-        map.current = new mapboxgl.Map({
-            container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/streets-v12',
-            center: [lng, lat],
-            zoom: 9
-        });
-
-        const geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-        });
-
-        map.current.addControl(geocoder);
-
-        geocoder.on('result', function (e) {
-            map.current.flyTo({
-                center: e.result.center,
-                essential: true,
-                zoom: 12
-            });});
-    }, []);
+    const [zoom, setZoom] = useState(9);
 
     function addNpsMarkers() {
         // Clear existing markers
@@ -97,6 +74,62 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
         }
     }
 
+    function createNpButton() {
+        return  {
+            onAdd: function (map) {
+                const div = document.createElement('div');
+                div.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+
+                const button = document.createElement('button');
+                button.className = 'mapboxgl-ctrl-icon custom-zoom-button';
+                button.type = 'button';
+                button.innerText = 'See Cities';
+                button['aria-label'] = 'Zoom to specific level';
+                button.onclick = function(){
+                    setMode('npsState');
+                };
+                div.appendChild(button);
+
+                return div;
+            }
+        };
+    }
+
+    useEffect(() => {
+        if (map.current) return; // initialize map only once
+        map.current = new mapboxgl.Map({
+            container: mapContainer.current,
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [lng, lat],
+            zoom: zoom
+        });
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+        });
+
+        map.current.addControl(geocoder);
+
+        geocoder.on('result', function (e) {
+            map.current.flyTo({
+                center: e.result.center,
+                essential: true,
+                zoom: 12
+            });});
+
+        map.current.on('zoom', function () {
+            const newZoom = map.current.getZoom();
+            if(newZoom !== zoom) {
+                setZoom(map.current.getZoom());
+            }
+        });
+
+        const buttonZoomControl = createNpButton();
+
+        map.current.addControl(buttonZoomControl, 'top-left');
+    }, []);
+
     useEffect(() => {
 
         if (!map.current || !navPoints || navPoints.length === 0) {
@@ -118,6 +151,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
                 zoom: 13
             });
             addPoisMarkers();
+
         }
         else if(mode === 'npsState') {
             if(npInfo && Object.keys(npInfo).length > 0) {
@@ -130,6 +164,12 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             addNpsMarkers();
         }
     }, [mode]);
+
+    useEffect(() => {
+        if(zoom <= 9) {
+            setMode('npsState');
+        }
+    }, [zoom]);
 
     return (
         <div>

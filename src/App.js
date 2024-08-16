@@ -25,7 +25,6 @@ const App = () => {
             return (<>
                 <Map npInfo={npInfo} setNpInfo={setNpInfo} navPoints={navPoints} mode={mode} setMode={setMode} />
                 <ImageCarousel npInfo={npInfo} />
-                <Button onClick={() => setMode('npsState')}>Overview</Button>
             </>)
         }
 
