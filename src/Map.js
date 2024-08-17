@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {createNpMarker, createNpPopup, createPoiPopup} from "./Markers";
+import {createNpMarker, createNpPopup, createPoiMarker, createPoiPopup} from "./Markers";
 import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
@@ -15,7 +15,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
     const [lat, setLat] = useState(42.35);
     const [zoom, setZoom] = useState(9);
 
-    function addNpsMarkers() {
+    async function addNpsMarkers() {
         // Clear existing markers
         if(markers.current.length > 0) {
             markers.current.forEach(marker => {
@@ -23,8 +23,12 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             });
             markers.current = [];
         }
+        const pointsAndElements = await Promise.all(navPoints.map(async point => {
+            const el = await createNpMarker(point);
+            return { point, el };
+        }));
         // Add markers to the map
-        navPoints.forEach(point => {
+        pointsAndElements.forEach(({point, el}) => {
             const popup = new mapboxgl.Popup({offset: 25});
 
             popup.on('open', () => {
@@ -43,9 +47,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
                     });
             });
 
-            // const el_marker = createNpMarker();
-
-            const el = createNpMarker()
+            console.log(el.style.backgroundImage);
 
             const marker = new mapboxgl.Marker(el)
                 .setLngLat([point.longitude, point.latitude])
@@ -55,7 +57,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
         });
     }
 
-    function addPoisMarkers() {
+    async function addPoisMarkers() {
         // Clear existing markers
         if(markers.current.length > 0) {
             markers.current.forEach(marker => {
@@ -66,10 +68,14 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
         if (npInfo && Object.keys(npInfo).length > 0) {
             // Add markers to the map
             const pois = npInfo.pois;
-            pois.forEach(point => {
+            const pointsAndElements = await Promise.all(pois.map(async point => {
+                const el = await createPoiMarker(point);
+                return { point, el };
+            }));
+            pointsAndElements.forEach(({point,el}) => {
                 const popup = new mapboxgl.Popup({offset: 25});
                 const div_marker = createPoiPopup(point);
-                const marker = new mapboxgl.Marker()
+                const marker = new mapboxgl.Marker(el)
                     .setLngLat([point.longitude, point.latitude])
                     .setPopup(popup.setHTML(div_marker.outerHTML))
                     .addTo(map.current);
@@ -144,7 +150,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             center: [somePoint.longitude, somePoint.latitude],
             essential: true
         })
-        addNpsMarkers();
+        addNpsMarkers().then(r => console.log('done'));
     }, [navPoints]);
 
     useEffect(() => {
@@ -165,7 +171,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
                     zoom: 9
                 });
             }
-            addNpsMarkers();
+            addNpsMarkers().then(r => console.log('done'));
         }
     }, [mode]);
 

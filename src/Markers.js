@@ -1,3 +1,5 @@
+import cityIcon from '../public/icons/_city.png';
+
 function openNavigation(latitude, longitude) {
     let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     let url = '';
@@ -62,8 +64,21 @@ export function createPoiPopup(poi) {
     return div_marker;
 }
 
-export function createNpMarker() {
+export async function createNpMarker(np) {
     const el = document.createElement('div');
     el.className = 'marker';
+
+    const iconModule = await import(`../public/icons/_${np.category}.png`);
+    el.style.backgroundImage = `url(${iconModule.default})`;
+    console.log(el.style.backgroundImage);
+    return el;
+}
+
+export async function createPoiMarker(poi) {
+    const el = document.createElement('div');
+    el.className = 'marker';
+
+    const iconModule = await import(`../public/icons/${poi.category}.png`);
+    el.style.backgroundImage = `url(${iconModule.default})`;
     return el;
 }
