@@ -66,7 +66,7 @@ export function createPoiPopup(poi) {
 
 export async function createNpMarker(np) {
     const el = document.createElement('div');
-    el.className = 'marker';
+    el.className = 'marker-np';
 
     const iconModule = await import(`../public/icons/_${np.category}.png`);
     el.style.backgroundImage = `url(${iconModule.default})`;
@@ -76,7 +76,7 @@ export async function createNpMarker(np) {
 
 export async function createPoiMarker(poi) {
     const el = document.createElement('div');
-    el.className = 'marker';
+    el.className = 'marker-poi';
 
     const iconModule = await import(`../public/icons/${poi.category}.png`);
     el.style.backgroundImage = `url(${iconModule.default})`;

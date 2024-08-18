@@ -158,9 +158,9 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             map.current.flyTo({
                 center: [npInfo.longitude, npInfo.latitude],
                 essential: true,
-                zoom: 13
+                zoom: 15
             });
-            addPoisMarkers();
+            addPoisMarkers().then(r => console.log('done'));
 
         }
         else if(mode === 'npsState') {
