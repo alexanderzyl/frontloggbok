@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontloggbok=self.webpackChunkfrontloggbok||[]).push([[6995],{6995:(e,o,k)=>{e.exports=k.p+"f51dc0dd2d9e815c2e72.png"}}]);
