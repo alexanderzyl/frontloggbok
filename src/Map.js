@@ -15,6 +15,22 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
     const [lat, setLat] = useState(42.35);
     const [zoom, setZoom] = useState(9);
 
+    const zoomToWeight = {
+        1:30,
+        2: 30,
+        3: 20,
+        4:15,
+        5: 10,
+        6: 5,
+        7: 1,
+    };
+
+    async function asyncFilter(array, predicate) {
+        const results = await Promise.all(array.map(predicate));
+
+        return array.filter((_v, index) => results[index]);
+    }
+
     async function addNpsMarkers() {
         // Clear existing markers
         if(markers.current.length > 0) {
@@ -23,10 +39,20 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             });
             markers.current = [];
         }
-        const pointsAndElements = await Promise.all(navPoints.map(async point => {
+        let int_zoom = Math.round(zoom);
+        const minWeight = zoomToWeight[int_zoom] !== undefined ? zoomToWeight[int_zoom] : 0;
+        console.log('zoom', int_zoom);
+
+        const filteredNavPoints = await asyncFilter(navPoints, async point => {
+            return point.num_pois >= minWeight;
+        });
+
+        const pointsAndElements = await Promise.all(filteredNavPoints.map(async point => {
             const el = await createNpMarker(point);
             return { point, el };
         }));
+
+        console.log('length', pointsAndElements.length);
         // Add markers to the map
         pointsAndElements.forEach(({point, el}) => {
             const popup = new mapboxgl.Popup({offset: 25});
@@ -46,8 +72,6 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
                         popup.setHTML('<div>Error loading data</div>');
                     });
             });
-
-            console.log(el.style.backgroundImage);
 
             const marker = new mapboxgl.Marker(el)
                 .setLngLat([point.longitude, point.latitude])
@@ -177,6 +201,9 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
 
     useEffect(() => {
         if(zoom <= 9) {
+            if (mode==='npsState') {
+                addNpsMarkers().then(r => console.log('done'));
+            }
             setMode('npsState');
         }
     }, [zoom]);

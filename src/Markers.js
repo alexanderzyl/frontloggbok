@@ -70,15 +70,19 @@ export async function createNpMarker(np) {
 
     const iconModule = await import(`../public/icons/_${np.category}.png`);
     el.style.backgroundImage = `url(${iconModule.default})`;
-    console.log(el.style.backgroundImage);
     return el;
 }
 
 export async function createPoiMarker(poi) {
     const el = document.createElement('div');
     el.className = 'marker-poi';
-
-    const iconModule = await import(`../public/icons/${poi.category}.png`);
+    let iconModule;
+    try {
+        iconModule = await import(`../public/icons/${poi.category}.png`);
+    } catch (e) {
+        // console.error('Icon not found. Fallback to default icon.', e);
+        iconModule = { default: '../public/icons/star.png' };
+    }
     el.style.backgroundImage = `url(${iconModule.default})`;
     return el;
 }
