@@ -55,7 +55,7 @@ const App = () => {
                 return <ImageCarousel npInfo={npInfo} />;
             case 'poiInfo':
                 // return some other component
-                return <PoiInfo curPoi={curPoi}/>;
+                return <PoiInfo curPoi={curPoi} setNpDetailsState={setNpDetailsState} />;
             // Add more cases as needed
             default:
                 return null;

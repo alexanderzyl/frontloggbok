@@ -10,9 +10,37 @@ async function getIcon(category) {
     return iconModule.default;
 }
 
-const PoiInfo = ({ curPoi }) => {
+function openMap(latitude, longitude) {
+    let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    let url = '';
+
+    if (isIOS) {
+        url = `maps://?saddr=&daddr=${latitude},${longitude}`;
+    } else { // Android and others
+        url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+    }
+
+    window.open(url, '_blank');
+}
+
+function openSygicMap(latitude, longitude) {
+    let sygicUrl = `com.sygic.aura://coordinate|${longitude}|${latitude}|drive`;
+    window.open(sygicUrl,'_blank');
+}
+
+const PoiInfo = ({ curPoi, setNpDetailsState }) => {
     const [iconSource, setIconSource] = useState("");
     const handleButtonClick = (buttonType) => {
+        if(buttonType === "Close") {
+            setNpDetailsState('images');
+        }
+        else if(buttonType === "Map") {
+            openMap(curPoi.latitude, curPoi.longitude);
+        }
+        else if(buttonType === "Sygic") {
+            openSygicMap(curPoi.latitude, curPoi.longitude);
+        }
+
     };
 
     useEffect(() => {
@@ -33,8 +61,8 @@ const PoiInfo = ({ curPoi }) => {
                 {curPoi.description}
             </p>
             <div>
-                <button onClick={() => handleButtonClick("Action1")}>Action1</button>
-                <button onClick={() => handleButtonClick("Action2")}>Action2</button>
+                <button onClick={() => handleButtonClick("Map")}>Open Map</button>
+                <button onClick={() => handleButtonClick("Sygic")}>Navigate with Sygic</button>
                 <button onClick={() => handleButtonClick("Close")}>Close</button>
             </div>
         </div>
