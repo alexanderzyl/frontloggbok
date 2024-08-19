@@ -7,7 +7,7 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
+const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCurPoi}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
@@ -42,7 +42,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
         }
         let int_zoom = Math.round(zoom);
         const minWeight = zoomToWeight[int_zoom] !== undefined ? zoomToWeight[int_zoom] : 0;
-        console.log('zoom', int_zoom);
+        // console.log('zoom', int_zoom);
 
         const filteredNavPoints = await asyncFilter(navPoints, async point => {
             return point.num_pois >= minWeight;
@@ -53,31 +53,43 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             return { point, el };
         }));
 
-        console.log('length', pointsAndElements.length);
+        // console.log('length', pointsAndElements.length);
         // Add markers to the map
         pointsAndElements.forEach(({point, el}) => {
-            const popup = new mapboxgl.Popup({offset: 25});
+            // const popup = new mapboxgl.Popup({offset: 25});
+            //
+            // popup.on('open', () => {
+            //     fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${point.id}`)
+            //         .then(response => response.json())
+            //         .then(np_data => {
+            //             const div_marker = createNpPopup(np_data);
+            //             popup.setHTML(div_marker.outerHTML);
+            //             // console.log(np_data);
+            //             setNpInfo(np_data);
+            //             setMode('poisState');
+            //         })
+            //         .catch(error => {
+            //             console.error('Error:', error);
+            //             popup.setHTML('<div>Error loading data</div>');
+            //         });
+            // });
 
-            popup.on('open', () => {
+            const marker = new mapboxgl.Marker(el)
+                .setLngLat([point.longitude, point.latitude])
+                // .setPopup(popup)
+                .addTo(map.current);
+
+            marker.getElement().addEventListener('click', () => {
                 fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${point.id}`)
                     .then(response => response.json())
                     .then(np_data => {
-                        const div_marker = createNpPopup(np_data);
-                        popup.setHTML(div_marker.outerHTML);
-                        console.log(np_data);
                         setNpInfo(np_data);
                         setMode('poisState');
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        popup.setHTML('<div>Error loading data</div>');
                     });
             });
-
-            const marker = new mapboxgl.Marker(el)
-                .setLngLat([point.longitude, point.latitude])
-                .setPopup(popup)
-                .addTo(map.current);
             markers.current.push(marker);
         });
     }
@@ -99,11 +111,14 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             }));
             pointsAndElements.forEach(({point,el}) => {
                 const popup = new mapboxgl.Popup({offset: 25});
-                const div_marker = createPoiPopup(point);
+                // const div_marker = createPoiPopup(point);
                 const marker = new mapboxgl.Marker(el)
                     .setLngLat([point.longitude, point.latitude])
-                    .setPopup(popup.setHTML(div_marker.outerHTML))
+                    // .setPopup(popup.setHTML(div_marker.outerHTML))
                     .addTo(map.current);
+                marker.getElement().addEventListener('click', () => {
+                    setCurPoi(point);
+                });
                 markers.current.push(marker);
             });
         }
@@ -152,6 +167,10 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             },
             trackUserLocation: true,
             showUserHeading: true
+        });
+
+        geolocate.current.on('geolocate', function(e) {
+            setCurLocation({latitude: e.coords.latitude, longitude: e.coords.longitude});
         });
         map.current.addControl(geolocate.current);
 

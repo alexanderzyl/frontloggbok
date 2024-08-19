@@ -1,0 +1,28 @@
+.map-container {
+    display: flex;
+    flex-direction: row; /* for desktop */
+    height: 100vh;  /*occupy the full viewport height */
+}
+
+.map {
+    flex-grow: 1; /* map should take up remaining space */
+    position: relative;  /* required by Mapbox map */
+}
+
+.additional-component {
+    position: fixed;
+    left: 0;
+    width: 300px; /* width of the left-side component */
+    height: 100%; /* full height of the .map-container */
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    .map-container {
+        flex-direction: column;
+    }
+    .additional-component {
+        width: 100%;
+        height: auto; /* or specify a height for the mobile view */
+    }
+}

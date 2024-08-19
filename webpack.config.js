@@ -41,4 +41,9 @@ module.exports = {
         compress: true,
         port: 8080, // Port to run the development server
     },
+    resolve: {
+        fallback: {
+            "url": require.resolve("url")
+        }
+    }
 };
