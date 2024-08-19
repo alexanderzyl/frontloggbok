@@ -5,6 +5,7 @@ import {Button} from "react-bootstrap";
 
 import './App.css';
 import PoiInfo from "./PoiInfo";
+import SortedPois from "./SortedPois";
 
 const App = () => {
     const [navPoints, setNavPoints] = useState([]);
@@ -44,15 +45,16 @@ const App = () => {
     const renderAdditionalComponent = () => {
         switch (npDetailsState) {
             case 'images':
-                if (npInfo.np_images && npInfo.np_images.length > 0) {
-                    return <ImageCarousel npInfo={npInfo} />;
-                }
-                else {
-                    return null;
-                }
+                return <SortedPois npInfo={npInfo} />;
+                // if (npInfo.np_images && npInfo.np_images.length > 0) {
+                //     return <ImageCarousel npInfo={npInfo} />;
+                // }
+                // else {
+                //     return null;
+                // }
             case 'geolocation':
-                // console.log('curLocation', curLocation);
-                return <ImageCarousel npInfo={npInfo} />;
+                return null;
+                // return SortedPois({npInfo});
             case 'poiInfo':
                 // return some other component
                 return <PoiInfo curPoi={curPoi} setNpDetailsState={setNpDetailsState} />;
