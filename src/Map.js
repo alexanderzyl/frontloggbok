@@ -10,10 +10,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZ
 const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
+    const geolocate = useRef(null);
     const markers = useRef([]);
-    const [lng, setLng] = useState(-70.9);
-    const [lat, setLat] = useState(42.35);
-    const [zoom, setZoom] = useState(9);
+    const [lng, setLng] = useState(12.5);
+    const [lat, setLat] =  useState(41.8);
+    const [zoom, setZoom] = useState(6);
 
     const zoomToWeight = {
         1:30,
@@ -145,6 +146,15 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
 
         map.current.addControl(geocoder);
 
+        geolocate.current = new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserHeading: true
+        });
+        map.current.addControl(geolocate.current);
+
         geocoder.on('result', function (e) {
             map.current.flyTo({
                 center: e.result.center,
@@ -159,9 +169,14 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
             }
         });
 
-        const buttonZoomControl = createNpButton();
+        // const buttonZoomControl = createNpButton();
+        //
+        // map.current.addControl(buttonZoomControl, 'top-left');
 
-        map.current.addControl(buttonZoomControl, 'top-left');
+        // Optionally, to immediately trigger geolocation on map load
+        map.current.on('load', function() {
+            geolocate.current.trigger();
+        });
     }, []);
 
     useEffect(() => {
@@ -169,11 +184,11 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode}) => {
         if (!map.current || !navPoints || navPoints.length === 0) {
             return;
         }
-        let somePoint = navPoints[Math.floor(Math.random() * navPoints.length)];
-        map.current.flyTo({
-            center: [somePoint.longitude, somePoint.latitude],
-            essential: true
-        })
+        // let somePoint = navPoints[Math.floor(Math.random() * navPoints.length)];
+        // map.current.flyTo({
+        //     center: [somePoint.longitude, somePoint.latitude],
+        //     essential: true
+        // })
         addNpsMarkers().then(r => console.log('done'));
     }, [navPoints]);
 
