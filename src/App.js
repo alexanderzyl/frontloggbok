@@ -42,19 +42,19 @@ const App = () => {
         }
     }, [curPoi]);
 
-    const renderAdditionalComponent = () => {
+    const AdditionalComponent = () => {
         switch (npDetailsState) {
             case 'images':
-                return <SortedPois npInfo={npInfo} />;
-                // if (npInfo.np_images && npInfo.np_images.length > 0) {
-                //     return <ImageCarousel npInfo={npInfo} />;
-                // }
-                // else {
-                //     return null;
-                // }
+                // return <SortedPois npInfo={npInfo} />;
+                if (npInfo.np_images && npInfo.np_images.length > 0) {
+                    return <ImageCarousel npInfo={npInfo} />;
+                }
+                else {
+                    return null;
+                }
             case 'geolocation':
-                return null;
-                // return SortedPois({npInfo});
+                // return null;
+                return SortedPois({npInfo});
             case 'poiInfo':
                 // return some other component
                 return <PoiInfo curPoi={curPoi} setNpDetailsState={setNpDetailsState} />;
@@ -64,24 +64,21 @@ const App = () => {
         }
     };
 
-    const renderComponents = () => {
-        return (
-            <div className="map-container">
-                <div className="map">
-                    <Map npInfo={npInfo} setNpInfo={setNpInfo} navPoints={navPoints}
-                         mode={mode} setMode={setMode} setCurLocation={setCurLocation} setCurPoi={setCurPoi}
-                    />
-                </div>
-                {mode === 'poisState' && npDetailsState && (
-                    <div className={`additional-component ${npDetailsState}`}>
-                        {renderAdditionalComponent()}
-                    </div>
-                )}
+    return (
+        <div className="map-container">
+            <div className="map">
+                <Map npInfo={npInfo} setNpInfo={setNpInfo} navPoints={navPoints}
+                     mode={mode} setMode={setMode} setCurLocation={setCurLocation} setCurPoi={setCurPoi}
+                />
             </div>
-        );
-    };
+            {mode === 'poisState' && npDetailsState && (
+                <div className={`additional-component ${npDetailsState}`}>
+                    <AdditionalComponent/>
+                </div>
+            )}
+        </div>
+    );
 
-    return <div>{renderComponents()}</div>;
 };
 
 
