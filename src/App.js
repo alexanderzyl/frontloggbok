@@ -11,7 +11,7 @@ const App = () => {
     const [navPoints, setNavPoints] = useState([]);
     const [npInfo, setNpInfo] = useState({});
     const [mode, setMode] = useState('npsState');
-    const [npDetailsState, setNpDetailsState] = useState('images');
+    const [npDetailsState, setNpDetailsState] = useState('poiInfo');
     const [curLocation, setCurLocation] = useState({});
     const [curPoi, setCurPoi] = useState({});
 
@@ -26,13 +26,14 @@ const App = () => {
 
     useEffect(() => {
         if (mode==='poisState') {
-            setNpDetailsState('images');
+            // setNpDetailsState('images');
         }
     }, [mode]);
 
     useEffect(() => {
         if (mode==='poisState') {
-            setNpDetailsState('geolocation');
+            console.log('debug geolocation', curLocation);
+            //setNpDetailsState('geolocation');
         }
     }, [curLocation]);
 
@@ -44,14 +45,14 @@ const App = () => {
 
     const AdditionalComponent = () => {
         switch (npDetailsState) {
-            case 'images':
-                // return <SortedPois npInfo={npInfo} />;
-                if (npInfo.np_images && npInfo.np_images.length > 0) {
-                    return <ImageCarousel npInfo={npInfo} />;
-                }
-                else {
-                    return null;
-                }
+            // case 'images':
+            //     // return <SortedPois npInfo={npInfo} />;
+            //     if (npInfo.np_images && npInfo.np_images.length > 0) {
+            //         return <ImageCarousel npInfo={npInfo} />;
+            //     }
+            //     else {
+            //         return null;
+            //     }
             case 'geolocation':
                 // return null;
                 return SortedPois({npInfo});
@@ -64,6 +65,19 @@ const App = () => {
         }
     };
 
+    const handlePoiStateButtonClick = () => {
+        switch (npDetailsState) {
+            case 'geolocation':
+                setNpDetailsState('poiInfo');
+                return;
+            case 'poiInfo':
+                setNpDetailsState('geolocation');
+                return;
+        }
+    }
+
+    const poiStateButtonName = (npDetailsState === "geolocation")? "Travel" : "Plan"
+
     return (
         <div className="map-container">
             <div className="map">
@@ -74,6 +88,7 @@ const App = () => {
             {mode === 'poisState' && npDetailsState && (
                 <div className={`additional-component ${npDetailsState}`}>
                     <AdditionalComponent/>
+                    <button onClick={handlePoiStateButtonClick}>{poiStateButtonName}</button>
                 </div>
             )}
         </div>

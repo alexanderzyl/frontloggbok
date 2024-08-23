@@ -170,6 +170,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCu
         });
 
         geolocate.current.on('geolocate', function(e) {
+            // console.log('geolocate e', e);
             setCurLocation({latitude: e.coords.latitude, longitude: e.coords.longitude});
         });
         map.current.addControl(geolocate.current);
