@@ -82,6 +82,7 @@ const App = () => {
             <div className="map">
                 <Map npInfo={npInfo} setNpInfo={setNpInfo} navPoints={navPoints}
                      mode={mode} setMode={setMode} setCurLocation={setCurLocation} setCurPoi={setCurPoi}
+                     npDetailsState={npDetailsState}
                 />
             </div>
             {mode === 'poisState' && npDetailsState && (

@@ -7,7 +7,7 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCurPoi}) => {
+const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCurPoi, npDetailsState}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
@@ -147,8 +147,8 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCu
             positionOptions: {
                 enableHighAccuracy: true
             },
-            trackUserLocation: true,
-            showUserHeading: true
+            trackUserLocation: false,
+            showUserHeading: false
         });
 
         geolocate.current.on('geolocate', function(e) {
@@ -172,9 +172,9 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCu
         });
 
         // immediately trigger geolocation on map load
-        map.current.on('load', function() {
-            geolocate.current.trigger();
-        });
+        // map.current.on('load', function() {
+        //     geolocate.current.trigger();
+        // });
     }, []);
 
     useEffect(() => {
@@ -215,6 +215,15 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCu
             setMode('npsState');
         }
     }, [zoom]);
+    useEffect(() => {
+        if (npDetailsState === 'trip') {
+            geolocate.current.trigger();
+        }
+        // else if (npDetailsState === 'plan') {
+        //     geolocate.current.stop();
+        // }
+
+    }, [npDetailsState]);
 
     return (
         <div>

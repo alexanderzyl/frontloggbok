@@ -20,11 +20,11 @@ const SortedPois = ({ npInfo }) => {
                             {poi.name} {/* Display the name of the point of interest */}
                         </Accordion.Header>
                     </Card.Header>
-                    <Accordion.Item eventKey={index.toString()}>
-                        <Accordion.Body>
-                            {poi.description} {/* Display the details of the point of interest */}
-                        </Accordion.Body>
-                    </Accordion.Item>
+                    {/*<Accordion.Item eventKey={index.toString()}>*/}
+                    {/*    <Accordion.Body>*/}
+                    {/*        {poi.description} /!* Display the details of the point of interest *!/*/}
+                    {/*    </Accordion.Body>*/}
+                    {/*</Accordion.Item>*/}
                 </Card>
             ))}
         </Accordion>
