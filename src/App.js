@@ -11,9 +11,9 @@ const App = () => {
     const [navPoints, setNavPoints] = useState([]);
     const [npInfo, setNpInfo] = useState({});
     const [mode, setMode] = useState('npsState');
-    const [npDetailsState, setNpDetailsState] = useState('poiInfo');
+    const [npDetailsState, setNpDetailsState] = useState('plan');
     const [curLocation, setCurLocation] = useState({});
-    const [curPoi, setCurPoi] = useState({});
+    const [curPoi, setCurPoi] = useState(null);
 
 
     useEffect(() => {
@@ -26,39 +26,38 @@ const App = () => {
 
     useEffect(() => {
         if (mode==='poisState') {
-            // setNpDetailsState('images');
+            setNpDetailsState('plan');
         }
     }, [mode]);
 
     useEffect(() => {
         if (mode==='poisState') {
             console.log('debug geolocation', curLocation);
-            //setNpDetailsState('geolocation');
         }
     }, [curLocation]);
 
     useEffect(() => {
         if (mode==='poisState') {
-            setNpDetailsState('poiInfo');
+            setNpDetailsState('plan');
         }
     }, [curPoi]);
 
     const AdditionalComponent = () => {
         switch (npDetailsState) {
-            // case 'images':
-            //     // return <SortedPois npInfo={npInfo} />;
-            //     if (npInfo.np_images && npInfo.np_images.length > 0) {
-            //         return <ImageCarousel npInfo={npInfo} />;
-            //     }
-            //     else {
-            //         return null;
-            //     }
-            case 'geolocation':
-                // return null;
+            case 'trip':
                 return SortedPois({npInfo});
-            case 'poiInfo':
+            case 'plan':
                 // return some other component
-                return <PoiInfo curPoi={curPoi} setNpDetailsState={setNpDetailsState} />;
+                if (curPoi !== null) {
+                    console.log('debug curPoi', curPoi);
+                    return <PoiInfo curPoi={curPoi} setCurPoi={setCurPoi} />;
+                }
+                else {
+                    if (npInfo.np_images && npInfo.np_images.length > 0) {
+                        return <ImageCarousel npInfo={npInfo} />;
+                    }
+                }
+                return null;
             // Add more cases as needed
             default:
                 return null;
@@ -67,11 +66,11 @@ const App = () => {
 
     const handlePoiStateButtonClick = () => {
         switch (npDetailsState) {
-            case 'geolocation':
-                setNpDetailsState('poiInfo');
+            case 'trip':
+                setNpDetailsState('plan');
                 return;
-            case 'poiInfo':
-                setNpDetailsState('geolocation');
+            case 'plan':
+                setNpDetailsState('trip');
                 return;
         }
     }

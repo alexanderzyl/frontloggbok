@@ -28,11 +28,11 @@ function openSygicMap(latitude, longitude) {
     window.open(sygicUrl,'_blank');
 }
 
-const PoiInfo = ({ curPoi, setNpDetailsState }) => {
+const PoiInfo = ({ curPoi, setCurPoi }) => {
     const [iconSource, setIconSource] = useState("");
     const handleButtonClick = (buttonType) => {
         if(buttonType === "Close") {
-            setNpDetailsState('images');
+            setCurPoi(null);
         }
         else if(buttonType === "Map") {
             openMap(curPoi.latitude, curPoi.longitude);
