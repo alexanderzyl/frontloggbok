@@ -45,7 +45,7 @@ const App = () => {
     const AdditionalComponent = () => {
         switch (npDetailsState) {
             case 'trip':
-                return SortedPois({npInfo, setCurLocation});
+                return SortedPois({npInfo, curLocation, setCurLocation});
             case 'plan':
                 // return some other component
                 if (curPoi !== null) {
