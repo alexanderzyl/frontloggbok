@@ -28,6 +28,9 @@ const App = () => {
         if (mode==='poisState') {
             setNpDetailsState('plan');
         }
+        else if (mode==='npsState') {
+            setCurPoi(null);
+        }
     }, [mode]);
 
     // useEffect(() => {
@@ -74,14 +77,14 @@ const App = () => {
         }
     }
 
-    const poiStateButtonName = (npDetailsState === "plan")? "Start Trip" : "Stop Trip";
+    const poiStateButtonName = (npDetailsState === "plan")? "Calculate Distances" : "Back to Overview";
 
     return (
         <div className="map-container">
             {mode === 'poisState' && npDetailsState && (
                 <div className={`additional-component ${npDetailsState}`}>
                     <AdditionalComponent />
-                    <button onClick={handlePoiStateButtonClick}>
+                    <button className={"poi-state-button"} onClick={handlePoiStateButtonClick}>
                         {poiStateButtonName}
                     </button>
                 </div>

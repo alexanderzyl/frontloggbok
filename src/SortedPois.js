@@ -12,23 +12,26 @@ const SortedPois = ({ npInfo, curLocation, setCurLocation }) => {
         if (npInfo === undefined || npInfo.pois === undefined) {
             return;
         }
+        let from;
 
         if (!curLocation || !curLocation.latitude || !curLocation.longitude) {
             // If curLocation is not set, use the original list of POIs without sorting
-            setSortedPois(npInfo.pois);
-        } else {
-            const calculateDistances = () => {
-                return npInfo.pois.map((poi) => {
-                    const from = [curLocation.longitude, curLocation.latitude];
-                    const to = [poi.longitude, poi.latitude];
-                    const dist = distance(from, to, { units: 'kilometers' });
-                    return { ...poi, distance: dist };
-                });
-            };
-
-            const sorted = calculateDistances().sort((a, b) => a.distance - b.distance);
-            setSortedPois(sorted);
+            from = [npInfo.longitude, npInfo.latitude];
         }
+        else {
+            from = [curLocation.longitude, curLocation.latitude];
+        }
+        const calculateDistances = () => {
+            return npInfo.pois.map((poi) => {
+                // const from = [curLocation.longitude, curLocation.latitude];
+                const to = [poi.longitude, poi.latitude];
+                const dist = distance(from, to, { units: 'kilometers' });
+                return { ...poi, distance: dist };
+            });
+        };
+
+        const sorted = calculateDistances().sort((a, b) => a.distance - b.distance);
+        setSortedPois(sorted);
     }, [curLocation, npInfo]);
 
     const handlePanelChange = (key) => {

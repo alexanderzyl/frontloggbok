@@ -18,6 +18,11 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for better separation */
 }
 
+.poi-state-button {
+    width: 100%;
+    height: 40px;
+}
+
 @media (min-width: 768px) {
     .map-container {
         flex-direction: row; /* Switch to row layout on larger screens */

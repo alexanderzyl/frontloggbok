@@ -66,6 +66,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLo
                     .then(response => response.json())
                     .then(np_data => {
                         setNpInfo(np_data);
+                        // setCurLocation({latitude: np_data.latitude, longitude: np_data.longitude});
                         setMode('poisState');
                     })
                     .catch(error => {
@@ -192,6 +193,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLo
                 essential: true,
                 zoom: 15
             });
+            setZoom(15);
             addPoisMarkers().then(r => console.log('done'));
 
         }
@@ -202,6 +204,7 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLo
                     essential: true,
                     zoom: 9
                 });
+                setZoom(9);
             }
             addNpsMarkers().then(r => console.log('done'));
         }
@@ -226,7 +229,8 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLo
         if (curLocation && Object.keys(curLocation).length > 0) {
             map.current.flyTo({
                 center: [curLocation.longitude, curLocation.latitude],
-                essential: true
+                essential: true,
+                zoom: zoom
             });
         }
 
