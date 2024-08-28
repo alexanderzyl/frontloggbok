@@ -1,0 +1,19 @@
+.sorted-pois {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    height: 200px;
+}
+
+@media (min-width: 768px) {
+    .sorted-pois {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        height: 300px;
+    }
+}

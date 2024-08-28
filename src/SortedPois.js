@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
-import Accordion from 'react-bootstrap/Accordion';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
+import { Collapse } from 'antd';
+import './SortedPois.css'
 
-const SortedPois = ({ npInfo }) => {
-    const [activeKey, setActiveKey] = useState("0"); // Set the first card to be opened initially
+const { Panel } = Collapse;
 
-    return (
-        <Accordion activeKey={activeKey}>
+const SortedPois = ({ npInfo, setCurLocation }) => {
+    const handlePanelChange = (key) => {
+        try {
+            const poi = npInfo.pois[+key];
+            console.log('poi', poi);
+            setCurLocation({ latitude: poi.latitude, longitude: poi.longitude });
+        }
+        catch (e) {
+            console.error(e);
+        }
+    };
+
+    return(
+        <div className={'sorted-pois'}
+             style={{ overflowY: 'scroll', border: '1px solid #ddd', padding: '10px' }}>
+        <Collapse onChange={handlePanelChange} accordion={true} >
             {npInfo.pois.map((poi, index) => (
-                <Card key={index}>
-                    <Card.Header>
-                        <Accordion.Header
-                            as={Button}
-                            variant="link"
-                            eventKey={index.toString()}
-                            onClick={() => setActiveKey(activeKey === index.toString() ? null : index.toString())}
-                        >
-                            {poi.name} {/* Display the name of the point of interest */}
-                        </Accordion.Header>
-                    </Card.Header>
-                    {/*<Accordion.Item eventKey={index.toString()}>*/}
-                    {/*    <Accordion.Body>*/}
-                    {/*        {poi.description} /!* Display the details of the point of interest *!/*/}
-                    {/*    </Accordion.Body>*/}
-                    {/*</Accordion.Item>*/}
-                </Card>
+                <Panel header={poi.name} key={index}>
+                    <p>{poi.description}</p>
+                </Panel>
             ))}
-        </Accordion>
+        </Collapse>
+        </div>
     );
 };
 

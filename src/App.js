@@ -30,11 +30,11 @@ const App = () => {
         }
     }, [mode]);
 
-    useEffect(() => {
-        if (mode==='poisState') {
-            console.log('debug geolocation', curLocation);
-        }
-    }, [curLocation]);
+    // useEffect(() => {
+    //     if (mode==='poisState') {
+    //         console.log('debug geolocation', curLocation);
+    //     }
+    // }, [curLocation]);
 
     useEffect(() => {
         if (mode==='poisState') {
@@ -45,11 +45,10 @@ const App = () => {
     const AdditionalComponent = () => {
         switch (npDetailsState) {
             case 'trip':
-                return SortedPois({npInfo});
+                return SortedPois({npInfo, setCurLocation});
             case 'plan':
                 // return some other component
                 if (curPoi !== null) {
-                    console.log('debug curPoi', curPoi);
                     return <PoiInfo curPoi={curPoi} setCurPoi={setCurPoi} />;
                 }
                 else {
@@ -75,7 +74,7 @@ const App = () => {
         }
     }
 
-    const poiStateButtonName = (npDetailsState === "geolocation")? "Travel" : "Plan"
+    const poiStateButtonName = (npDetailsState === "plan")? "Start Trip" : "Stop Trip";
 
     return (
         <div className="map-container">
@@ -95,8 +94,8 @@ const App = () => {
                     mode={mode}
                     setMode={setMode}
                     setCurLocation={setCurLocation}
+                    curLocation={curLocation}
                     setCurPoi={setCurPoi}
-                    npDetailsState={npDetailsState}
                 />
             </div>
         </div>

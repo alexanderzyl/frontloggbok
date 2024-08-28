@@ -7,7 +7,7 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
 
-const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCurPoi, npDetailsState}) => {
+const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLocation, setCurPoi}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
@@ -215,15 +215,22 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, setCu
             setMode('npsState');
         }
     }, [zoom]);
-    useEffect(() => {
-        if (npDetailsState === 'trip') {
-            geolocate.current.trigger();
-        }
-        // else if (npDetailsState === 'plan') {
-        //     geolocate.current.stop();
-        // }
+    // useEffect(() => {
+    //     if (npDetailsState === 'trip') {
+    //         geolocate.current.trigger();
+    //     }
+    //
+    // }, [npDetailsState]);
 
-    }, [npDetailsState]);
+    useEffect(() => {
+        if (curLocation && Object.keys(curLocation).length > 0) {
+            map.current.flyTo({
+                center: [curLocation.longitude, curLocation.latitude],
+                essential: true
+            });
+        }
+
+    }, [curLocation]);
 
     return (
         <div>
