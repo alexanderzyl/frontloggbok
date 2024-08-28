@@ -1,28 +1,35 @@
 .map-container {
     display: flex;
-    flex-direction: row; /* for desktop */
-    height: 100vh;  /*occupy the full viewport height */
+    flex-direction: column; /* Stacks on mobile by default */
+    height: 100vh; /* Make sure the container takes full height */
 }
 
 .map {
-    flex-grow: 1; /* map should take up remaining space */
-    position: relative;  /* required by Mapbox map */
+    flex: 1; /* The map should take remaining space */
+    min-height: 60vh; /* Set a minimum height for mobile view */
+    position: relative; /* Ensure the map stays in place */
+    width: 100%; /* Ensure it fills the container's width */
+    height: 100%; /* Ensure it fills the container's height */
 }
 
 .additional-component {
-    position: fixed;
-    left: 0;
-    width: 300px; /* width of the left-side component */
-    height: 100%; /* full height of the .map-container */
+    background-color: #f8f8f8; /* Optional: add some background to distinguish */
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for better separation */
 }
 
-/* Media query for mobile devices */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
     .map-container {
-        flex-direction: column;
+        flex-direction: row; /* Switch to row layout on larger screens */
     }
+
+    .map {
+        flex: 2; /* Map takes up more space on desktop */
+    }
+
     .additional-component {
-        width: 100%;
-        height: auto; /* or specify a height for the mobile view */
+        flex: 1; /* Additional component takes up less space on desktop */
+        max-width: 300px; /* Optional: limit the width of the additional component */
+        height: 100%; /* Full height on the desktop */
     }
 }

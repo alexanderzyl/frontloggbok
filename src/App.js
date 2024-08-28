@@ -79,20 +79,29 @@ const App = () => {
 
     return (
         <div className="map-container">
-            <div className="map">
-                <Map npInfo={npInfo} setNpInfo={setNpInfo} navPoints={navPoints}
-                     mode={mode} setMode={setMode} setCurLocation={setCurLocation} setCurPoi={setCurPoi}
-                     npDetailsState={npDetailsState}
-                />
-            </div>
             {mode === 'poisState' && npDetailsState && (
                 <div className={`additional-component ${npDetailsState}`}>
-                    <AdditionalComponent/>
-                    <button onClick={handlePoiStateButtonClick}>{poiStateButtonName}</button>
+                    <AdditionalComponent />
+                    <button onClick={handlePoiStateButtonClick}>
+                        {poiStateButtonName}
+                    </button>
                 </div>
             )}
+            <div className="map">
+                <Map
+                    npInfo={npInfo}
+                    setNpInfo={setNpInfo}
+                    navPoints={navPoints}
+                    mode={mode}
+                    setMode={setMode}
+                    setCurLocation={setCurLocation}
+                    setCurPoi={setCurPoi}
+                    npDetailsState={npDetailsState}
+                />
+            </div>
         </div>
     );
+
 
 };
 
