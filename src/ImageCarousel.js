@@ -21,7 +21,7 @@ const ImageCarousel = ({npInfo}) => {
         }
     }, [npInfo]);
 
-    return (<Carousel arrows dotPosition="left" infinite={false}>
+    return (<Carousel arrows dotPosition="left" infinite={false} swipeToSlide={true}>
         {images.map((image, index) => (
             <div key={index}>
                 <h3 style={contentStyle}>
