@@ -1,31 +1,19 @@
 import React, {useEffect,useRef ,useState} from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import {Carousel} from "antd";
 import "./ImageCarousel.css";
 
-// Custom arrow components
-
 const ImageCarousel = ({npInfo}) => {
-    const settings = {
-        dots: false,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        // stop autoplay
-        autoplay: false,
-        arrows: true,
-        accessibility: true,
+
+    const contentStyle = {
+        height: '160px',
+        color: '#fff',
+        lineHeight: '160px',
+        textAlign: 'center',
+        background: '#364d79',
     };
 
-    const sliderRef = useRef();
     const [images, setImages] = useState([]);
 
-    const defaultImage = ["https://via.placeholder.com/200?text=No%20Image%20Available",
-        "https://via.placeholder.com/200?text=No%20Image%20Available",
-        "https://via.placeholder.com/200?text=No%20Image%20Available",
-        "https://via.placeholder.com/200?text=No%20Image%20Available"]
 
     useEffect(() => {
         if (npInfo && npInfo.np_images) {
@@ -33,17 +21,16 @@ const ImageCarousel = ({npInfo}) => {
         }
     }, [npInfo]);
 
-    return (
-        <div style={{ width: "200px", margin: "0 auto", maxHeight: "100px" }}>
-            <Slider ref={sliderRef} {...settings} style={{height: "100px"}}>
-                {images.map((image, index) => (
-                    <div key={index} style={{ maxHeight: '100px', maxWidth: '200px', overflow: 'hidden' }}>
-                        <img src={image.url} alt={`Slide ${index + 1}`} style={{ width: "100%", height: 'auto' }} />
-                    </div>
-                ))}
-            </Slider>
-        </div>
-    );
+    return (<Carousel arrows dotPosition="left" infinite={false}>
+        {images.map((image, index) => (
+            <div key={index}>
+                <h3 style={contentStyle}>
+                    <img src={image.url} alt={`Slide ${index + 1}`} style={{ width: "100%", height: 'auto' }} />
+                </h3>
+            </div>
+        ))}
+
+    </Carousel>);
 };
 
 export default ImageCarousel;
