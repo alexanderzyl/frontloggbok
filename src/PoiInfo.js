@@ -24,8 +24,17 @@ function openMap(latitude, longitude) {
 }
 
 function openSygicMap(latitude, longitude) {
-    let sygicUrl = `com.sygic.aura://coordinate|${longitude}|${latitude}|drive`;
-    window.open(sygicUrl,'_blank');
+    // Create a Sygic URL
+    const sygicUrl = `com.sygic.aura://coordinate|${longitude}|${latitude}|drive`;
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = sygicUrl;
+    // Append link to body
+    document.body.appendChild(link);
+    // Simulate click on the link
+    link.click();
+    // Remove the link from the document
+    document.body.removeChild(link);
 }
 
 const PoiInfo = ({ curPoi, setCurPoi }) => {
