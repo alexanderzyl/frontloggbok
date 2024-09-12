@@ -1,9 +1,13 @@
 // src/components/Login.js
-import React from 'react';
+import React, {useState} from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import AddPoi from "./AddPoi";
 
 const Login = () => {
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -22,7 +26,8 @@ const Login = () => {
                 const { access_token } = res.data;
                 // console.log('Access Token:', access_token);
                 localStorage.setItem('token', access_token);
-                window.location.href = '/dashboard';
+                // window.location.href = '/add-poi';
+                setIsLoggedIn(true);
 
             } catch (err) {
                 console.error('Authentication failed:', err);
@@ -35,7 +40,15 @@ const Login = () => {
         flow: 'implicit', // Ensure you're using the right OAuth flow
     });
 
-    return <button onClick={() => login()}>Sign in with Google</button>;
+    return (
+        <div>
+            {isLoggedIn ? (
+                <AddPoi />   // Render AddPoi component after successful login
+            ) : (
+                <button onClick={() => login()}>Sign in with Google</button>
+            )}
+        </div>
+    );
 };
 
 export default Login;
