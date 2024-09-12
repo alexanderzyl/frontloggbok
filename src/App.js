@@ -1,111 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import Map from './Map';
-import ImageCarousel  from "./ImageCarousel";
-import {Button} from "react-bootstrap";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import PoiBaseApp from "./PoiBaseApp";
+import Login from "./Login";
 
-import './App.css';
-import PoiInfo from "./PoiInfo";
-import SortedPois from "./SortedPois";
-
-const App = () => {
-    const [navPoints, setNavPoints] = useState([]);
-    const [npInfo, setNpInfo] = useState({});
-    const [mode, setMode] = useState('npsState');
-    const [npDetailsState, setNpDetailsState] = useState('plan');
-    const [curLocation, setCurLocation] = useState({});
-    const [curPoi, setCurPoi] = useState(null);
-
-
-    useEffect(() => {
-        fetch('https://backlogbok.onrender.com/api/v1/navpoints/')
-            .then(response => response.json())
-            .then(data => {
-                setNavPoints(data);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (mode==='poisState') {
-            setNpDetailsState('plan');
-        }
-        else if (mode==='npsState') {
-            setCurPoi(null);
-        }
-    }, [mode]);
-
-    // useEffect(() => {
-    //     if (mode==='poisState') {
-    //         console.log('debug geolocation', curLocation);
-    //     }
-    // }, [curLocation]);
-
-    useEffect(() => {
-        if (mode==='poisState') {
-            setNpDetailsState('plan');
-        }
-    }, [curPoi]);
-
-    const AdditionalComponent = () => {
-        switch (npDetailsState) {
-            case 'trip':
-                return SortedPois({npInfo, curLocation, setCurLocation});
-            case 'plan':
-                // return some other component
-                if (curPoi !== null) {
-                    return <PoiInfo curPoi={curPoi} setCurPoi={setCurPoi} />;
-                }
-                else {
-                    if (npInfo.np_images && npInfo.np_images.length > 0) {
-                        return <ImageCarousel npInfo={npInfo} />;
-                    }
-                }
-                return null;
-            // Add more cases as needed
-            default:
-                return null;
-        }
-    };
-
-    const handlePoiStateButtonClick = () => {
-        switch (npDetailsState) {
-            case 'trip':
-                setNpDetailsState('plan');
-                return;
-            case 'plan':
-                setNpDetailsState('trip');
-                return;
-        }
-    }
-
-    const poiStateButtonName = (npDetailsState === "plan")? "Calculate Distances" : "Back to Overview";
-
-    return (
-        <div className="map-container">
-            {mode === 'poisState' && npDetailsState && (
-                <div className={`additional-component ${npDetailsState}`}>
-                    <AdditionalComponent />
-                    <button className={"poi-state-button"} onClick={handlePoiStateButtonClick}>
-                        {poiStateButtonName}
-                    </button>
-                </div>
-            )}
-            <div className="map">
-                <Map
-                    npInfo={npInfo}
-                    setNpInfo={setNpInfo}
-                    navPoints={navPoints}
-                    mode={mode}
-                    setMode={setMode}
-                    setCurLocation={setCurLocation}
-                    curLocation={curLocation}
-                    setCurPoi={setCurPoi}
-                />
-            </div>
-        </div>
-    );
-
-
-};
-
+const App = () => (
+    <Router>
+        <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/poibase" element={<PoiBaseApp />} />
+        </Routes>
+    </Router>
+);
 
 export default App;

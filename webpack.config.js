@@ -39,7 +39,7 @@ module.exports = {
             directory: path.join(__dirname, 'public'), // Serve static files from 'public' directory
         },
         compress: true,
-        port: 8080, // Port to run the development server
+        port: 3000, // Port to run the development server
     },
     resolve: {
         fallback: {
