@@ -4,7 +4,8 @@ import {Link} from "react-router-dom";
 
 const AddPoi = () => {
     const [userPoi, setUserPoi] = useState(null);
-    const [poiId, setPoiId] = useState(''); // State to handle user input for poi_id
+    const [poiId, setPoiId] = useState('');
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const fetchData = async (poi_id) => {
         const token = localStorage.getItem('token');
@@ -18,7 +19,7 @@ const AddPoi = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             }
-            const res = await axios.put(`http://localhost:8000/api/v1/user/store_poi/${poi_id}`, {}, { headers });
+            const res = await axios.put(`${backendUrl}/user/store_poi/${poi_id}`, {}, { headers });
             setUserPoi(res.data);
         } catch (err) {
             console.error('Failed to fetch user data:', err);

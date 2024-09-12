@@ -14,9 +14,10 @@ const PoiBaseApp = () => {
     const [curLocation, setCurLocation] = useState({});
     const [curPoi, setCurPoi] = useState(null);
 
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
-        fetch('https://backlogbok.onrender.com/api/v1/navpoints/')
+        fetch(`${backendUrl}/navpoints/`)
             .then(response => response.json())
             .then(data => {
                 setNavPoints(data);

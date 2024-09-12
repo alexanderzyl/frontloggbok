@@ -8,12 +8,14 @@ const Login = () => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
                 // tokenResponse contains the credential (ID token)
                 // console.log('Test Login: ', tokenResponse);
-                const res = await axios.post('http://localhost:8000/api/v1/auth/google', {
+                const res = await axios.post(`${backendUrl}/auth/google`, {
                     token: tokenResponse.access_token,  // Make sure this contains the Google token
                 }, {
                     headers: {

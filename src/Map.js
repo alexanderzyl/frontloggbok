@@ -61,8 +61,10 @@ const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLo
                 // .setPopup(popup)
                 .addTo(map.current);
 
+            const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
             marker.getElement().addEventListener('click', () => {
-                fetch(`https://backlogbok.onrender.com/api/v1/navpoint/${point.id}`)
+                fetch(`${backendUrl}/navpoint/${point.id}`)
                     .then(response => response.json())
                     .then(np_data => {
                         setNpInfo(np_data);
