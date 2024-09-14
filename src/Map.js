@@ -2,10 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {createNpMarker, createNpPopup, createPoiMarker, createPoiPopup} from "./Markers";
+import {createNpMarker, createPoiMarker} from "./Markers";
 import MapboxGeocoder from "mapbox-gl-geocoder";
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiYXp5bHNvZnQiLCJhIjoiY2x6NzY3a3ExMDYxbjJpczVyZGxzd2R6biJ9.3Co395qaKUdX4xlZieOj5Q';
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLocation, setCurPoi}) => {
     const mapContainer = useRef(null);

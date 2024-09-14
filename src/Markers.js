@@ -1,4 +1,4 @@
-import cityIcon from '../public/icons/_city.png';
+import mapboxgl from "mapbox-gl";
 
 function openNavigation(latitude, longitude) {
     let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -61,7 +61,8 @@ export function createPoiPopup(poi) {
         openNavigation(poi.latitude, poi.longitude);
     };
 
-    return div_marker;
+    return new mapboxgl.Popup({offset: 25})
+        .setHTML(div_marker.outerHTML + navigateButton.outerHTML);
 }
 
 export async function createNpMarker(np) {
