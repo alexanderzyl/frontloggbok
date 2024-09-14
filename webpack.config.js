@@ -11,6 +11,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
+        publicPath: '/',  // Ensures static files are correctly referenced
     },
     mode: 'development',
     module: {
@@ -43,8 +44,12 @@ module.exports = {
         }),
     ],
     devServer: {
+        historyApiFallback: {
+            index: '/' // Ensures all routes serve the index.html file
+        },
         static: {
             directory: path.join(__dirname, 'public'), // Serve static files from 'public' directory
+            publicPath: '/', // Ensure the server knows the root public path
         },
         compress: true,
         port: 3000, // Port to run the development server

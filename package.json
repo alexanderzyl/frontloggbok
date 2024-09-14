@@ -1,5 +1,5 @@
 {
-  "name": "frontloggbok",
+  "name": "logbok",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -44,5 +44,5 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
   },
-  "homepage": "https://alexanderzyl.github.io/frontloggbok"
+  "homepage": "https://frontloggbok.vercel.app"
 }
