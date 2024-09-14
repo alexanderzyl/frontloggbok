@@ -6,7 +6,6 @@ import {createNpMarker, createPoiMarker} from "./Markers";
 import MapboxGeocoder from "mapbox-gl-geocoder";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
-
 const Map = ({npInfo, setNpInfo, navPoints, mode, setMode, setCurLocation, curLocation, setCurPoi}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
