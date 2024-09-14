@@ -13,7 +13,6 @@ const Login = () => {
         onSuccess: async (tokenResponse) => {
             try {
                 // tokenResponse contains the credential (ID token)
-                // console.log('Test Login: ', tokenResponse);
                 const res = await axios.post(`${backendUrl}/auth/google`, {
                     token: tokenResponse.access_token,  // Make sure this contains the Google token
                 }, {
@@ -22,13 +21,11 @@ const Login = () => {
                     },
                 });
 
-                // console.log('Response: ', res.data);
-
                 const { access_token } = res.data;
                 // console.log('Access Token:', access_token);
                 localStorage.setItem('token', access_token);
-                // window.location.href = '/add-poi';
-                setIsLoggedIn(true);
+                window.location.href = '/user';
+                // setIsLoggedIn(true);
 
             } catch (err) {
                 console.error('Authentication failed:', err);
@@ -41,13 +38,19 @@ const Login = () => {
         flow: 'implicit', // Ensure you're using the right OAuth flow
     });
 
+    // return (
+    //     <div>
+    //         {isLoggedIn ? (
+    //             <AddPoi />   // Render AddPoi component after successful login
+    //         ) : (
+    //             <button onClick={() => login()}>Sign in with Google</button>
+    //         )}
+    //     </div>
+    // );
+
     return (
         <div>
-            {isLoggedIn ? (
-                <AddPoi />   // Render AddPoi component after successful login
-            ) : (
-                <button onClick={() => login()}>Sign in with Google</button>
-            )}
+            <button onClick={() => login()}>Sign in with Google</button>
         </div>
     );
 };

@@ -18,7 +18,7 @@ const Poi = () => {
                 // console.log('POI Data:', res.data);
                 setPoiData(res.data);
             } catch (err) {
-                console.error('Failed to fetch poi data:', err);
+                console.error('Failed to fetch user pois', err);
             }
         };
         fetchData(shortId).then();
