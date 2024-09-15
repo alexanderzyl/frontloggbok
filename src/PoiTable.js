@@ -48,6 +48,14 @@ const PoiTable = ({}) => {
     const handleSwitchChange = (checked, record) => {
         // Handle the change event (e.g., make an API request to update the is_public field)
         console.log(`Checkbox changed for ${record.name}:`, checked);
+        const headers = getAuthHeaders();
+        axios.put(`${backendUrl}/user/publish_poi/${record.short_id}/${checked}`, {}, { headers })
+            .then(response => {
+                fetchUserPois().then();
+            })
+            .catch(error => {
+                console.error('Failed to update the poi:', error);
+            });
     };
 
     const handleDelete = (short_id) => {
@@ -56,7 +64,6 @@ const PoiTable = ({}) => {
         const headers = getAuthHeaders();
         axios.delete(`${backendUrl}/user/delete_poi/${short_id}`, { headers })
             .then(response => {
-                console.log('Deleted successfully:', response.data);
                 fetchUserPois().then();
             })
             .catch(error => {
@@ -87,13 +94,13 @@ const PoiTable = ({}) => {
             ),
         },
         {
-            title: 'url',
+            title: '',
             dataIndex: 'short_id',
             key: 'url',
-            render: short_id => <a href={`/poi/${short_id}`}>View</a>,
+            render: short_id => <a href={`/poi/${short_id}`} target="_blank">View</a>,
         },
         {
-            title: 'Delete',
+            title: '',
             dataIndex: 'short_id',
             key: 'delete',
             render: short_id => (

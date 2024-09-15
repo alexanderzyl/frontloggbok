@@ -54,7 +54,7 @@ const async_store_poi = async (poi_id) => {
             'Authorization': `Bearer ${token}`,
         }
         const res = await axios.put(`${backendUrl}/user/store_poi/${poi_id}`, {}, { headers });
-        window.location.href = '/user';
+        // window.location.href = '/user';
     } catch (err) {
         console.error('Failed to add user poi:', err);
         window.location.href = '/';
