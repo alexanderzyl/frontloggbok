@@ -1,4 +1,7 @@
 import React, {useEffect, useState} from 'react';
+import axios from "axios";
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 async function getIcon(category) {
     let iconModule;
@@ -37,6 +40,27 @@ function openSygicMap(latitude, longitude) {
     document.body.removeChild(link);
 }
 
+const async_store_poi = async (poi_id) => {
+    const token = localStorage.getItem('token');
+    console.log('Token:', token);
+    if (!token || token === 'undefined') {
+        // Redirect to login if no token
+        window.location.href = '/';
+        return;
+    }
+    try {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        }
+        const res = await axios.put(`${backendUrl}/user/store_poi/${poi_id}`, {}, { headers });
+        window.location.href = '/user';
+    } catch (err) {
+        console.error('Failed to add user poi:', err);
+        window.location.href = '/';
+    }
+};
+
 const PoiInfo = ({ curPoi, setCurPoi }) => {
     const [iconSource, setIconSource] = useState("");
     const handleButtonClick = (buttonType) => {
@@ -49,7 +73,9 @@ const PoiInfo = ({ curPoi, setCurPoi }) => {
         else if(buttonType === "Sygic") {
             openSygicMap(curPoi.latitude, curPoi.longitude);
         }
-
+        else if(buttonType === "Store") {
+            async_store_poi(curPoi.id).then();
+        }
     };
 
     useEffect(() => {
@@ -72,6 +98,7 @@ const PoiInfo = ({ curPoi, setCurPoi }) => {
             <div>
                 <button onClick={() => handleButtonClick("Map")}>Open Map</button>
                 <button onClick={() => handleButtonClick("Sygic")}>Navigate with Sygic</button>
+                <button onClick={() => handleButtonClick("Store")}>Store Poi</button>
                 <button onClick={() => handleButtonClick("Close")}>Close</button>
             </div>
         </div>
