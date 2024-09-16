@@ -45,6 +45,18 @@ const GroupTable = () => {
             });
     }
 
+    function handleDelete(short_id) {
+        // Handle the delete event (e.g., make an API request to delete the record)
+        const headers = getAuthHeaders();
+        axios.delete(`${backendUrl}/user/delete_group/${short_id}`, { headers })
+            .then(response => {
+                fetchGroups().then();
+            })
+            .catch(error => {
+                console.error('Failed to delete the group:', error);
+            });
+    }
+
     const columns = [
         {
             title: 'Name',
@@ -70,10 +82,12 @@ const GroupTable = () => {
             ),
         },
         {
-            title: 'User Pois',
-            dataIndex: 'num_user_pois',
-            key: 'num_user_pois',
-        },
+            title: 'Actions',
+            key: 'actions',
+            render: (text, record) => (
+                <button onClick={() => handleDelete(record.short_id)}>Remove</button>
+            ),
+        }
     ];
 
     useEffect(() => {
