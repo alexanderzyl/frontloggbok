@@ -74,6 +74,8 @@ const PoiTable = ({}) => {
             key: 'is_public',
             render: (is_public, record) => (
                 <Switch
+                    checkedChildren="Yes"
+                    unCheckedChildren="No"
                     checked={is_public}
                     onChange={(checked) => handleSwitchChange(checked, record)}
                 />

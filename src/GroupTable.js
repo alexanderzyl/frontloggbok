@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Switch, Table} from "antd";
 import axios from "axios";
+
+
+
 const GroupTable = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [groups, setGroups] = useState([]);
@@ -30,14 +33,17 @@ const GroupTable = () => {
         }
     }
 
-    // class UserPoiGroup(BaseModel):
-    // short_id: str
-    // name: str
-    // description: str
-    // latitude: float
-    // longitude: float
-    // is_public: bool
-    // num_user_pois: int
+    function handleSwitchChange(checked, record) {
+        // Handle the change event (e.g., make an API request to update the is_public field)
+        const headers = getAuthHeaders();
+        axios.put(`${backendUrl}/user/publish_group/${record.short_id}/${checked}`, {}, { headers })
+            .then(response => {
+                fetchGroups().then();
+            })
+            .catch(error => {
+                console.error('Failed to update the group:', error);
+            });
+    }
 
     const columns = [
         {
@@ -51,19 +57,17 @@ const GroupTable = () => {
             key: 'description',
         },
         {
-            title: 'Latitude',
-            dataIndex: 'latitude',
-            key: 'latitude',
-        },
-        {
-            title: 'Longitude',
-            dataIndex: 'longitude',
-            key: 'longitude',
-        },
-        {
-            title: 'Public',
+            title: 'Published',
             dataIndex: 'is_public',
             key: 'is_public',
+            render: (is_public, record) => (
+                <Switch
+                    checkedChildren="Yes"
+                    unCheckedChildren="No"
+                    checked={is_public}
+                    onChange={(checked) => handleSwitchChange(checked, record)}
+                />
+            ),
         },
         {
             title: 'User Pois',

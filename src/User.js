@@ -7,7 +7,7 @@ const { TabPane } = Tabs;
 
 const User = () => {
     return (
-        <Tabs defaultActiveKey="points">
+        <Tabs defaultActiveKey="groups">
             <TabPane tab="My Groups" key="groups">
                 <GroupTable></GroupTable>
             </TabPane>
