@@ -7,14 +7,6 @@ const PoiTable = ({}) => {
 
     const [userPois, setUserPois] = useState([]);
 
-    // class UserPoi(BaseModel):
-    // short_id: str
-    // name: str
-    // description: str
-    // latitude: float
-    // longitude: float
-    // is_public: bool
-
     const getAuthHeaders = () => {
         const token = localStorage.getItem('token');
         if (!token || token === 'undefined') {
@@ -29,12 +21,6 @@ const PoiTable = ({}) => {
     }
 
     const fetchUserPois = async () => {
-        const token = localStorage.getItem('token');
-        if (!token || token === 'undefined') {
-            // Redirect to login if no token
-            window.location.href = '/';
-            return;
-        }
         try {
             const headers = getAuthHeaders();
             const res = await axios.get(`${backendUrl}/user/pois`, { headers });
