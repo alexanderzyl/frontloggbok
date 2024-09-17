@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Switch, Table} from "antd";
 import axios from "axios";
+import EditableCell from "./EditableCell";
 
 const PoiTable = ({}) => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -57,18 +58,38 @@ const PoiTable = ({}) => {
             });  // Added this closing parenthesis and curly brace
     }
 
+    const handleSave = async (short_id, dataIndex, value) => {
+        const headers = getAuthHeaders();
+        const updateData = { [dataIndex]: value, 'short_id': short_id };
+        await axios.put(`${backendUrl}/user/change_poi_${dataIndex}`, updateData, { headers })
+            .then(() => fetchUserPois())
+            .catch(error => console.error('Failed to update the group:', error));
+    };
+
     const columns = [
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
             sorter: (a, b) => a.name.localeCompare(b.name),
+            render: (text, record) => (
+                <EditableCell
+                    value={text}
+                    onChange={(value) => handleSave(record.short_id, 'name', value)}
+                />
+            ),
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
             sorter: (a, b) => a.description.localeCompare(b.description),
+            render: (text, record) => (
+                <EditableCell
+                    value={text}
+                    onChange={(value) => handleSave(record.short_id, 'description', value)}
+                />
+            ),
         },
         {
             title: 'Published',
