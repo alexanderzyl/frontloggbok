@@ -62,11 +62,13 @@ const PoiTable = ({}) => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            sorter: (a, b) => a.description.localeCompare(b.description),
         },
         {
             title: 'Published',
@@ -80,6 +82,7 @@ const PoiTable = ({}) => {
                     onChange={(checked) => handleSwitchChange(checked, record)}
                 />
             ),
+            sorter: (a, b) => a.is_public - b.is_public,
         },
         {
             title: '',
