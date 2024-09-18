@@ -1,13 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
-import mapboxgl from "!mapbox-gl";
-import './Map.css';
-import {createPoiMarker, createPoiPopup} from "./Markers";
+import './PublishGroup.css';
+import GroupMap from "./GroupMap";
+import SortedPois from "./SortedPois";
 
 const PublishPoi = () => {
     const { shortId } = useParams();
-    const [groupData, setGroupData] = useState(null);
+    const [groupData, setGroupData] = useState({});
+    const [curLocation, setCurLocation] = useState({});
 
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -28,11 +29,11 @@ const PublishPoi = () => {
     }, [shortId]);
 
     return (
-        <div>
-            <h1>Publish Group</h1>
-            <p>Group ID: {shortId}</p>
-            <p>Group Data: {JSON.stringify(groupData)}</p>
+        <div className='publish-group'>
+            <SortedPois npInfo={groupData} curLocation={curLocation} setCurLocation={setCurLocation} />
+            <GroupMap curLocation={curLocation} setCurLocation={setCurLocation} groupData={groupData}/>
         </div>
+
     );
 };
 
