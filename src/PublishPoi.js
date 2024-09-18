@@ -8,7 +8,7 @@ import {createPoiMarker, createPoiPopup} from "./Markers";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-const Poi = () => {
+const PublishPoi = () => {
     const { shortId } = useParams();
     const [poiData, setPoiData] = useState(null);
     const mapContainer = useRef(null);
@@ -87,4 +87,4 @@ const Poi = () => {
     );
 };
 
-export default Poi;
+export default PublishPoi;

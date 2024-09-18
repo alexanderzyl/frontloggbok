@@ -113,7 +113,7 @@ const PoiTable = ({}) => {
             render: (text, record) => (
                 <>
                     {record.is_public ? (
-                        <a href={`/poi/${record.short_id}`} target="_blank">View</a>
+                        <a href={`/p/${record.short_id}`} target="_blank">View</a>
                     ) : (
                         <span>Not published</span>
                     )}
