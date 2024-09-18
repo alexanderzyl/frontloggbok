@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Switch, Table} from "antd";
 import axios from "axios";
 import EditableCell from "./EditableCell";
+import {render} from "react-dom";
 
 const PoiTable = ({}) => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -109,7 +110,15 @@ const PoiTable = ({}) => {
             title: '',
             dataIndex: 'short_id',
             key: 'url',
-            render: short_id => <a href={`/poi/${short_id}`} target="_blank">View</a>,
+            render: (text, record) => (
+                <>
+                    {record.is_public ? (
+                        <a href={`/poi/${record.short_id}`} target="_blank">View</a>
+                    ) : (
+                        <span>Not published</span>
+                    )}
+                </>
+            ),
         },
         {
             title: '',

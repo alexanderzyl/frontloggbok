@@ -51,6 +51,14 @@ const GroupTable = () => {
             .catch(error => console.error('Failed to delete the group:', error));
     };
 
+    function handleShow(short_id) {
+
+    }
+
+    function handleEdit(short_id) {
+
+    }
+
     const columns = [
         {
             title: 'Name',
@@ -88,12 +96,26 @@ const GroupTable = () => {
             ),
         },
         {
+            title: 'Details',
+            key: 'details',
+            render: (text, record) => (
+                <>
+                    {record.is_public ? (
+                        <button onClick={() => handleShow(record.short_id)}>Show</button>
+                    ) : (
+                        <button onClick={() => handleEdit(record.short_id)}>Edit</button>
+                    )}
+                </>
+            ),
+        },
+        {
             title: 'Actions',
             key: 'actions',
             render: (text, record) => (
                 <button onClick={() => handleDelete(record.short_id)}>Remove</button>
             ),
-        },
+        }
+
     ];
 
     useEffect(() => {
