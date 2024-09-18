@@ -7,6 +7,7 @@ const { Panel } = Collapse;
 
 const SortedPois = ({ npInfo, curLocation, setCurLocation }) => {
     const [sortedPois, setSortedPois] = useState([]);
+    const [selectedKey, setSelectedKey] = useState(null);
 
     useEffect(() => {
         if (npInfo === undefined || npInfo.pois === undefined) {
@@ -32,13 +33,24 @@ const SortedPois = ({ npInfo, curLocation, setCurLocation }) => {
 
         const sorted = calculateDistances().sort((a, b) => a.distance - b.distance);
         setSortedPois(sorted);
+
+        // Update selectedKey if the selected POI is in the sorted list
+        if (selectedKey) {
+            const selectedPoi = sorted.find(poi => poi.short_id === selectedKey);
+            if (!selectedPoi) {
+                setSelectedKey(null);
+            }
+        }
+
     }, [curLocation, npInfo]);
 
     const handlePanelChange = (key) => {
+        setSelectedKey(key);
         try {
-            const poi = sortedPois[+key];
-            // console.log('poi', poi);
-            setCurLocation({ latitude: poi.latitude, longitude: poi.longitude });
+            const poi = sortedPois.find(poi => poi.short_id === key);
+            if (poi) {
+                setCurLocation({ latitude: poi.latitude, longitude: poi.longitude });
+            }
         } catch (e) {
             console.error(e);
         }
@@ -51,7 +63,7 @@ const SortedPois = ({ npInfo, curLocation, setCurLocation }) => {
                 {sortedPois.map((poi, index) => (
                     <Panel
                         header={`${poi.name}${poi.distance !== undefined ? ` - ${poi.distance.toFixed(2)} km` : ''}`}
-                        key={index}
+                        key={poi.short_id}
                     >
                         <p>{poi.description}</p>
                     </Panel>
