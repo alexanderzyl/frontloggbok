@@ -1,9 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapboxGeocoder from "mapbox-gl-geocoder";
 import {createPoiMarker} from "./Markers";
+import PoiPopup from "./PoiPopup";
+import {createRoot} from "react-dom/client";
+
+const createUserPoiPopup = (point) => {
+    const popupContainer = document.createElement('div');
+    const root = createRoot(popupContainer);
+    root.render(<PoiPopup point={point} />);
+    return new mapboxgl.Popup().setDOMContent(popupContainer);
+};
+
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -33,6 +43,7 @@ const GroupMap = ({curLocation,setCurLocation, groupData}) => {
             psels.forEach(({point,el}) => {
                 const marker = new mapboxgl.Marker(el)
                     .setLngLat([point.longitude, point.latitude])
+                    .setPopup(createUserPoiPopup(point))
                     .addTo(map.current);
                 marker.getElement().addEventListener('click', () => {
                     setCurLocation(point);

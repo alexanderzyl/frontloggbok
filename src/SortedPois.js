@@ -60,7 +60,7 @@ const SortedPois = ({ npInfo, curLocation, setCurLocation }) => {
         <div className={'sorted-pois'}
              style={{ overflowY: 'scroll', border: '1px solid #ddd', padding: '10px' }}>
             <Collapse onChange={handlePanelChange} accordion={true}>
-                {sortedPois.map((poi, index) => (
+                {sortedPois.map((poi) => (
                     <Panel
                         header={`${poi.name}${poi.distance !== undefined ? ` - ${poi.distance.toFixed(2)} km` : ''}`}
                         key={poi.short_id}
