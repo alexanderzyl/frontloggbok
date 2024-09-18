@@ -26,7 +26,6 @@ const PoiTable = ({}) => {
         try {
             const headers = getAuthHeaders();
             const res = await axios.get(`${backendUrl}/user/pois`, { headers });
-            console.log('User Pois: ', res.data);
             setUserPois(res.data);
         } catch (err) {
             console.error('Failed to fetch poi data:', err);
@@ -35,7 +34,6 @@ const PoiTable = ({}) => {
 
     const handleSwitchChange = (checked, record) => {
         // Handle the change event (e.g., make an API request to update the is_public field)
-        console.log(`Checkbox changed for ${record.name}:`, checked);
         const headers = getAuthHeaders();
         axios.put(`${backendUrl}/user/publish_poi/${record.short_id}/${checked}`, {}, { headers })
             .then(response => {
@@ -48,7 +46,6 @@ const PoiTable = ({}) => {
 
     const handleDelete = (short_id) => {
         // Handle the delete event (e.g., make an API request to delete the record)
-        console.log(`Delete record with short_id:`, short_id);
         const headers = getAuthHeaders();
         axios.delete(`${backendUrl}/user/delete_poi/${short_id}`, { headers })
             .then(response => {

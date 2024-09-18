@@ -4,6 +4,7 @@ import PoiBaseApp from "./PoiBaseApp";
 import Login from "./Login";
 import PublishPoi from "./PublishPoi";
 import User from "./User";
+import PublishGroup from "./PublishGroup";
 
 const App = () => {
     useEffect(() => {
@@ -20,6 +21,7 @@ const App = () => {
                 <Route path="/" element={<Login />} />
                 <Route path="/user" element={<User />} />
                 <Route path="/p/:shortId" element={<PublishPoi />} />
+                <Route path="/g/:shortId" element={<PublishGroup />} />
                 <Route path="/poibase" element={<PoiBaseApp />} />
             </Routes>
         </Router>
