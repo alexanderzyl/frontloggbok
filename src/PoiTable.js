@@ -4,15 +4,14 @@ import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
-import {getAllUserPois} from "./utils/fetch_poi";
 
-const PoiTable = ({}) => {
+const PoiTable = ({getPois, short_id}) => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const [userPois, setUserPois] = useState([]);
 
     const fetchUserPois = () => {
-            getAllUserPois().then(
+            getPois(short_id).then(
                 (res) => {
                     setUserPois(res.data);
                 }
