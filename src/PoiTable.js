@@ -4,20 +4,23 @@ import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
+import {getAllUserPois} from "./utils/fetch_poi";
 
 const PoiTable = ({}) => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const [userPois, setUserPois] = useState([]);
 
-    const fetchUserPois = async () => {
-        try {
-            const headers = getAuthHeaders();
-            const res = await axios.get(`${backendUrl}/user/pois`, { headers });
-            setUserPois(res.data);
-        } catch (err) {
-            console.error('Failed to fetch poi data:', err);
-        }
+    const fetchUserPois = () => {
+            getAllUserPois().then(
+                (res) => {
+                    setUserPois(res.data);
+                }
+            ).catch(
+                (err) => {
+                    console.error('Failed to fetch poi data:', err);
+                }
+            );
     }
 
     const handleSwitchChange = (checked, record) => {
@@ -25,7 +28,7 @@ const PoiTable = ({}) => {
         const headers = getAuthHeaders();
         axios.put(`${backendUrl}/user/publish_poi/${record.short_id}/${checked}`, {}, { headers })
             .then(response => {
-                fetchUserPois().then();
+                fetchUserPois();
             })
             .catch(error => {
                 console.error('Failed to update the poi:', error);
@@ -37,7 +40,7 @@ const PoiTable = ({}) => {
         const headers = getAuthHeaders();
         axios.delete(`${backendUrl}/user/delete_poi/${short_id}`, { headers })
             .then(response => {
-                fetchUserPois().then();
+                fetchUserPois();
             })
             .catch(error => {
                 console.error('Failed to delete the poi:', error);
@@ -116,7 +119,7 @@ const PoiTable = ({}) => {
     ];
 
     useEffect(() => {
-        fetchUserPois().then();
+        fetchUserPois();
     }, []);
 
     return (<Table columns={columns} dataSource={userPois} rowKey="shortId" />);

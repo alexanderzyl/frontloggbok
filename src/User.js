@@ -26,12 +26,12 @@ const User = () => {
     const items = [
         {
             key: 'groups',
-            label: 'My Groups',
+            label: 'All Groups',
             children: <GroupTable />,
         },
         {
             key: 'points',
-            label: 'My Points',
+            label: 'All Points',
             children: <PoiTable />,
         },
     ];
