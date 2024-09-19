@@ -4,6 +4,7 @@ import PoiTable from "./PoiTable";
 import GroupTable from "./GroupTable";
 import axios from "axios";
 import {getAuthHeaders} from "./utils/auth";
+import {getAllUserPois} from "./utils/data_fetchers";
 
 const User = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -32,7 +33,7 @@ const User = () => {
         {
             key: 'points',
             label: 'All Points',
-            children: <PoiTable />,
+            children: <PoiTable getPois={getAllUserPois} />,
         },
     ];
 

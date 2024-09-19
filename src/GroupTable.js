@@ -4,19 +4,22 @@ import {CopyOutlined, LinkOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import EditableCell from './EditableCell';
 import {getAuthHeaders} from "./utils/auth";
+import {getAllGroups} from "./utils/data_fetchers";
 
 const GroupTable = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [groups, setGroups] = useState([]);
 
     const fetchGroups = async () => {
-        try {
-            const headers = getAuthHeaders();
-            const res = await axios.get(`${backendUrl}/user/groups`, { headers });
-            setGroups(res.data);
-        } catch (err) {
-            console.error('Failed to fetch group data:', err);
-        }
+        getAllGroups().then(
+            (res) => {
+                setGroups(res.data);
+            }
+        ).catch(
+            (err) => {
+                console.error('Failed to fetch group data:', err);
+            }
+        );
     };
 
     const handleSave = async (short_id, dataIndex, value) => {

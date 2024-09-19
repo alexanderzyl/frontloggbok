@@ -1,30 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
-import axios from "axios";
 import './PublishGroup.css';
 import GroupMap from "./GroupMap";
 import SortedPois from "./SortedPois";
+import {getGroup} from "./utils/data_fetchers";
 
 const PublishPoi = () => {
     const { shortId } = useParams();
     const [groupData, setGroupData] = useState({});
     const [curLocation, setCurLocation] = useState({});
 
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
-
-    useEffect(() => {
-        const fetchData = async (shortId) => {
-            try {
-                const headers = {
-                    'Content-Type': 'application/json'
-                }
-                const res = await axios.get(`${backendUrl}/group/${shortId}`, { headers });
-                // console.log('POI Data:', res.data);
+    const fetchData = async (shortId) => {
+        getGroup(shortId).then(
+            (res) => {
                 setGroupData(res.data);
-            } catch (err) {
+            }
+        ).catch(
+            (err) => {
                 console.error('Failed to fetch group', err);
             }
-        };
+        );
+    };
+
+    useEffect(() => {
         fetchData(shortId).then();
     }, [shortId]);
 

@@ -10,3 +10,9 @@ export const getAuthHeaders = () => {
         Authorization: `Bearer ${token}`,
     };
 }
+
+export const getNonAuthHeaders = () => {
+    return {
+        'Content-Type': 'application/json',
+    };
+}
