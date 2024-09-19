@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Switch } from 'antd';
+import {Table, Switch, Tooltip, Button, message} from 'antd';
+import {CopyOutlined, LinkOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import EditableCell from './EditableCell';
 
@@ -45,15 +46,34 @@ const GroupTable = () => {
     };
 
     const handleDelete = (short_id) => {
-        const headers = getAuthHeaders();
-        axios.delete(`${backendUrl}/user/delete_group/${short_id}`, { headers })
-            .then(() => fetchGroups())
-            .catch(error => console.error('Failed to delete the group:', error));
+        if (window.confirm("Are you sure you want to delete this group?")) {
+            const headers = getAuthHeaders();
+            axios.delete(`${backendUrl}/user/delete_group/${short_id}`, { headers })
+                .then(() => fetchGroups())
+                .catch(error => console.error('Failed to delete the group:', error));
+        }
     };
+
+    const handleCopyLink = (shortId) => {
+        const link = `${window.location.origin}/g/${shortId}`;
+        navigator.clipboard.writeText(link).then(
+            () => {
+                message.success('Link copied to clipboard!').then();
+            },
+            (err) => {
+                message.error('Failed to copy link').then();
+            }
+        );
+    };
+
 
     function handleEdit(short_id) {
 
-    }
+    };
+
+    const navigateToLink = (shortId) => {
+        window.location.href = `/g/${shortId}`;
+    };
 
     const columns = [
         {
@@ -97,7 +117,22 @@ const GroupTable = () => {
             render: (text, record) => (
                 <>
                     {record.is_public ? (
-                        <a href={`/g/${record.short_id}`}>Show</a>
+                        <div>
+                            <Tooltip title="Navigate to link">
+                                <Button
+                                    icon={<LinkOutlined />}
+                                    onClick={() => navigateToLink(record.short_id)}
+                                    style={{ marginRight: '8px' }}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Copy link">
+                                <Button
+                                    icon={<CopyOutlined />}
+                                    onClick={() => handleCopyLink(record.short_id)}
+                                    style={{ marginLeft: '8px' }}
+                                />
+                            </Tooltip>
+                        </div>
                     ) : (
                         <button onClick={() => handleEdit(record.short_id)}>Edit</button>
                     )}
@@ -108,7 +143,7 @@ const GroupTable = () => {
             title: 'Actions',
             key: 'actions',
             render: (text, record) => (
-                <button onClick={() => handleDelete(record.short_id)}>Remove</button>
+                <button onClick={() => handleDelete(record.short_id)}>Delete</button>
             ),
         }
 
