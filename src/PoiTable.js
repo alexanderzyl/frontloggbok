@@ -4,14 +4,16 @@ import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
+import {useParams} from "react-router-dom";
 
-const PoiTable = ({getPois, short_id}) => {
+const PoiTable = ({getPois}) => {
+    const { shortId } = useParams();
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const [userPois, setUserPois] = useState([]);
 
     const fetchUserPois = () => {
-            getPois(short_id).then(
+            getPois(shortId).then(
                 (res) => {
                     setUserPois(res.data);
                 }
