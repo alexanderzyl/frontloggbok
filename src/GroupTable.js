@@ -126,7 +126,10 @@ const GroupTable = () => {
                             </Tooltip>
                         </div>
                     ) : (
-                        <button onClick={() => handleEdit(record.short_id)}>Edit</button>
+                        <div>
+                            <a href={`/poiingroup/${record.short_id}`}>View</a>
+                        </div>
+
                     )}
                 </>
             ),

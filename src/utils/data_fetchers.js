@@ -17,3 +17,9 @@ export const getGroup = async (shortId) => {
     const headers = getNonAuthHeaders();
     return axios.get(`${backendUrl}/group/${shortId}`, { headers });
 };
+
+export const getOwnGroup = async (shortId) => {
+    console.log('shortId:', shortId);
+    const headers = getAuthHeaders();
+    return axios.get(`${backendUrl}/user/group/${shortId}`, { headers });
+};
