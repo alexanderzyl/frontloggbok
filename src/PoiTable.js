@@ -3,24 +3,12 @@ import {Switch, Table} from "antd";
 import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
+import {getAuthHeaders} from "./utils/auth";
 
 const PoiTable = ({}) => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const [userPois, setUserPois] = useState([]);
-
-    const getAuthHeaders = () => {
-        const token = localStorage.getItem('token');
-        if (!token || token === 'undefined') {
-            // Redirect to login if no token
-            window.location.href = '/';
-            return;
-        }
-        return {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-        };
-    }
 
     const fetchUserPois = async () => {
         try {

@@ -3,22 +3,11 @@ import {Table, Switch, Tooltip, Button, message} from 'antd';
 import {CopyOutlined, LinkOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import EditableCell from './EditableCell';
+import {getAuthHeaders} from "./utils/auth";
 
 const GroupTable = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [groups, setGroups] = useState([]);
-
-    const getAuthHeaders = () => {
-        const token = localStorage.getItem('token');
-        if (!token || token === 'undefined') {
-            window.location.href = '/';
-            return {};
-        }
-        return {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-        };
-    };
 
     const fetchGroups = async () => {
         try {

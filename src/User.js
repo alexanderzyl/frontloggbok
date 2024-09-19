@@ -3,22 +3,11 @@ import { Tabs } from 'antd';
 import PoiTable from "./PoiTable";
 import GroupTable from "./GroupTable";
 import axios from "axios";
+import {getAuthHeaders} from "./utils/auth";
 
 const User = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [curUser, setCurUser] = useState({});
-
-    const getAuthHeaders = () => {
-        const token = localStorage.getItem('token');
-        if (!token || token === 'undefined') {
-            window.location.href = '/';
-            return {};
-        }
-        return {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-        };
-    };
 
     const fetchUser = async () => {
         try {
