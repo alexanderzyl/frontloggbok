@@ -6,6 +6,7 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 import {addNewPoiPopup, createPoiMarker} from "./Markers";
 import PoiPopup from "./PoiPopup";
 import {createRoot} from "react-dom/client";
+import AddNewPoiPopup from "./AddNewPoiPopup";
 
 const createUserPoiPopup = (point) => {
     const popupContainer = document.createElement('div');
@@ -14,16 +15,25 @@ const createUserPoiPopup = (point) => {
     return new mapboxgl.Popup().setDOMContent(popupContainer);
 };
 
+const createAddNewPoiPopup = (lngLat, feature, group_id) => {
+    console.log('group_id:', group_id);
+    const popupContainer = document.createElement('div');
+    const root = createRoot(popupContainer);
+    root.render(<AddNewPoiPopup lngLat={lngLat} feature={feature} group_id={group_id} />);
+    return new mapboxgl.Popup().setLngLat(lngLat).setDOMContent(popupContainer);
+}
+
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-const GroupMap = ({curLocation,setCurLocation, groupData}) => {
+const GroupMap = ({curLocation, setCurLocation, groupData}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
     const initLat = 12.5;
     const initLon=  41.8;
     const markers = useRef([]);
+    const groupDataRef = useRef(groupData);
 
     async function addMarkers() {
         // Clear existing markers
@@ -101,11 +111,8 @@ const GroupMap = ({curLocation,setCurLocation, groupData}) => {
                 let feature = features[0];
 
                 // Display the feature information
-                addNewPoiPopup(e.lngLat, feature).then(
-                    (popup) => {
-                        popup.addTo(map.current);
-                    }
-                );
+                let popup = createAddNewPoiPopup(e.lngLat, feature, groupDataRef.current.short_id);
+                popup.addTo(map.current);
             } else {
                 alert('No features at clicked point');
             }
@@ -126,6 +133,7 @@ const GroupMap = ({curLocation,setCurLocation, groupData}) => {
     }, [curLocation]);
 
     useEffect(() => {
+        groupDataRef.current = groupData;
         if (groupData && Object.keys(groupData).length > 0) {
             map.current.flyTo({
                 center: [groupData.longitude, groupData.latitude],

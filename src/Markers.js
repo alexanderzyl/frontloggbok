@@ -54,7 +54,7 @@ export async function createPoiMarker(poi) {
         iconModule = await import(`../public/icons/${poi.category}.png`);
     } catch (e) {
         // console.error('Icon not found. Fallback to default icon.', e);
-        iconModule = { default: '../public/icons/star.png' };
+        iconModule = await import(`../public/icons/star.png`);
     }
     el.style.backgroundImage = `url(${iconModule.default})`;
     return el;
