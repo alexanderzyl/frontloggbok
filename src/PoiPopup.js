@@ -56,7 +56,7 @@ const async_store_poi = async (poi_id) => {
     }
 };
 
-const PoiInfo = ({ point }) => {
+const PoiPopup = ({ point }) => {
     const [iconSource, setIconSource] = useState("");
     const handleButtonClick = (buttonType) => {
         if(buttonType === "Map") {
@@ -93,4 +93,4 @@ const PoiInfo = ({ point }) => {
     );
 };
 
-export default PoiInfo;
+export default PoiPopup;

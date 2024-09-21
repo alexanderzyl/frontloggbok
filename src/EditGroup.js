@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import './PublishGroup.css';
-import GroupMap from "./GroupMap";
-import {getGroup} from "./utils/data_fetchers";
+import SortedPois from "./SortedPois";
+import {getOwnGroup} from "./utils/data_fetchers";
+import EditMap from "./EditMap";
 
 const PublishPoi = () => {
     const { shortId } = useParams();
@@ -10,7 +11,7 @@ const PublishPoi = () => {
     const [curLocation, setCurLocation] = useState({});
 
     const fetchData = async (shortId) => {
-        getGroup(shortId).then(
+        getOwnGroup(shortId).then(
             (res) => {
                 setGroupData(res.data);
             }
@@ -27,7 +28,8 @@ const PublishPoi = () => {
 
     return (
         <div className='publish-group'>
-            <GroupMap curLocation={curLocation} setCurLocation={setCurLocation} groupData={groupData}/>
+            <SortedPois npInfo={groupData} curLocation={curLocation} setCurLocation={setCurLocation} />
+            <EditMap curLocation={curLocation} setCurLocation={setCurLocation} groupData={groupData}/>
         </div>
 
     );

@@ -20,7 +20,11 @@ export const getGroup = async (shortId) => {
 
 export const getOwnGroup = async (shortId) => {
     const headers = getAuthHeaders();
+    return  await axios.get(`${backendUrl}/user/group/${shortId}`, { headers });
+};
+
+export const getOwnGroupPois = async (shortId) => {
+    const headers = getAuthHeaders();
     const response = await axios.get(`${backendUrl}/user/group/${shortId}`, { headers });
-    console.log('Response:', response.data);
     return {data: response.data.pois};
 };

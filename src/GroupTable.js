@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Table, Switch, Tooltip, Button, message} from 'antd';
-import {CopyOutlined, LinkOutlined} from '@ant-design/icons';
+import {CopyOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import EditableCell from './EditableCell';
 import {getAuthHeaders} from "./utils/auth";
@@ -58,14 +58,17 @@ const GroupTable = () => {
         );
     };
 
-
-    function handleEdit(short_id) {
-
-    };
-
     const navigateToLink = (shortId) => {
         window.location.href = `/g/${shortId}`;
     };
+
+    function handleGotoTable(short_id) {
+        window.location.href = `/poiingroup/${short_id}`;
+    }
+
+    function handleGotoMap(short_id) {
+        window.location.href = `/editgroup/${short_id}`;
+    }
 
     const columns = [
         {
@@ -127,7 +130,20 @@ const GroupTable = () => {
                         </div>
                     ) : (
                         <div>
-                            <a href={`/poiingroup/${record.short_id}`}>View</a>
+                            <Tooltip title="Edit in table">
+                                <Button
+                                    icon={<TableOutlined />}
+                                    onClick={() => handleGotoTable(record.short_id)}
+                                    style={{ marginRight: '8px' }}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Edit in map">
+                                <Button
+                                    icon={<EnvironmentOutlined />}
+                                    onClick={() => handleGotoMap(record.short_id)}
+                                    style={{ marginLeft: '8px' }}
+                                />
+                            </Tooltip>
                         </div>
 
                     )}
