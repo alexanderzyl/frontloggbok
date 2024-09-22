@@ -5,7 +5,7 @@ import EditableCell from "./EditableCell";
 import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
 import {useParams} from "react-router-dom";
-import {CopyOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from "@ant-design/icons";
 import {handleCopyLink, handleGotoMap, handleGotoTable, navigateToPublicGroup} from "./utils/navigations";
 
 const PoiTable = ({getPois}) => {
@@ -41,15 +41,16 @@ const PoiTable = ({getPois}) => {
     };
 
     const handleDelete = (short_id) => {
-        // Handle the delete event (e.g., make an API request to delete the record)
-        const headers = getAuthHeaders();
-        axios.delete(`${backendUrl}/user/delete_poi/${short_id}`, { headers })
-            .then(response => {
-                fetchUserPois();
-            })
-            .catch(error => {
-                console.error('Failed to delete the poi:', error);
-            });  // Added this closing parenthesis and curly brace
+        if (window.confirm("Are you sure you want to delete this point?")) {
+            const headers = getAuthHeaders();
+            axios.delete(`${backendUrl}/user/delete_poi/${short_id}`, {headers})
+                .then(response => {
+                    fetchUserPois();
+                })
+                .catch(error => {
+                    console.error('Failed to delete the poi:', error);
+                });
+        }
     }
 
     const handleSave = async (short_id, dataIndex, value) => {
@@ -152,7 +153,7 @@ const PoiTable = ({getPois}) => {
             // sorter: (a, b) => a.is_public - b.is_public,
         },
         {
-            title: '',
+            title: 'View',
             dataIndex: 'short_id',
             key: 'url',
             render: (text, record) => (
@@ -169,8 +170,11 @@ const PoiTable = ({getPois}) => {
             title: '',
             dataIndex: 'short_id',
             key: 'delete',
-            render: short_id => (
-                <a onClick={() => handleDelete(short_id)}>Delete</a>
+            render: (text, record) => (
+                <DeleteOutlined
+                    onClick={() => handleDelete(record.short_id)}
+                    style={{ cursor: 'pointer', color: 'red' }}
+                />
             ),
         }
     ];

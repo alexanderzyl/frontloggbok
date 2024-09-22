@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {Table, Switch, Tooltip, Button, message} from 'antd';
-import {CopyOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from '@ant-design/icons';
+import {CopyOutlined, DeleteOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import EditableCell from './EditableCell';
 import {getAuthHeaders} from "./utils/auth";
 import {getAllGroups} from "./utils/data_fetchers";
 import {handleCopyLink, handleGotoMap, handleGotoTable, navigateToPublicGroup} from "./utils/navigations";
+import CreateGroupMap from "./CreateGroupMap";
+import {createRoot} from "react-dom/client";
 
 const GroupTable = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -131,7 +133,10 @@ const GroupTable = () => {
             title: 'Actions',
             key: 'actions',
             render: (text, record) => (
-                <button onClick={() => handleDelete(record.short_id)}>Delete</button>
+                <DeleteOutlined
+                    onClick={() => handleDelete(record.short_id)}
+                    style={{ cursor: 'pointer', color: 'red' }}
+                />
             ),
         }
 
@@ -141,14 +146,42 @@ const GroupTable = () => {
         fetchGroups().then();
     }, []);
 
+    function handleCreateGroup() {
+        const createGroup = (name, description, lat, lng) => {
+            const data = {
+                name: name,
+                description: description,
+                latitude: lat,
+                longitude: lng
+            }
+            axios.post(`${backendUrl}/user/add_group`, data, { headers: getAuthHeaders() })
+                .then(() => fetchGroups())
+                .catch(error => console.error('Failed to create the group:', error));
+        };
+        const container = document.getElementById('create-group-container');
+        if (container) {
+            const root = createRoot(container);
+            root.render(<CreateGroupMap createGroup={createGroup} />);
+        }
+    }
+
     return (
-        <Table
-            bordered
-            dataSource={groups}
-            columns={columns}
-            rowClassName="editable-row"
-            rowKey="short_id"
-        />
+        <div>
+            <div style={{marginBottom: '16px'}}>
+                <Button type={"primary"} style={{marginRight: 8}} onClick={handleCreateGroup}>
+                    Create Group
+                </Button>
+            </div>
+            <div id="create-group-container"></div>
+
+            <Table
+                bordered
+                dataSource={groups}
+                columns={columns}
+                rowClassName="editable-row"
+                rowKey="short_id"
+            />
+        </div>
     );
 };
 
