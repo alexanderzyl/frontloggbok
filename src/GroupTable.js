@@ -5,6 +5,7 @@ import axios from 'axios';
 import EditableCell from './EditableCell';
 import {getAuthHeaders} from "./utils/auth";
 import {getAllGroups} from "./utils/data_fetchers";
+import {handleCopyLink, handleGotoMap, handleGotoTable, navigateToPublicGroup} from "./utils/navigations";
 
 const GroupTable = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -45,30 +46,6 @@ const GroupTable = () => {
                 .catch(error => console.error('Failed to delete the group:', error));
         }
     };
-
-    const handleCopyLink = (shortId) => {
-        const link = `${window.location.origin}/g/${shortId}`;
-        navigator.clipboard.writeText(link).then(
-            () => {
-                message.success('Link copied to clipboard!').then();
-            },
-            (err) => {
-                message.error('Failed to copy link').then();
-            }
-        );
-    };
-
-    const navigateToLink = (shortId) => {
-        window.location.href = `/g/${shortId}`;
-    };
-
-    function handleGotoTable(short_id) {
-        window.location.href = `/poiingroup/${short_id}`;
-    }
-
-    function handleGotoMap(short_id) {
-        window.location.href = `/editgroup/${short_id}`;
-    }
 
     const columns = [
         {
@@ -116,7 +93,7 @@ const GroupTable = () => {
                             <Tooltip title="Navigate to link">
                                 <Button
                                     icon={<LinkOutlined />}
-                                    onClick={() => navigateToLink(record.short_id)}
+                                    onClick={() => navigateToPublicGroup(record.short_id)}
                                     style={{ marginRight: '8px' }}
                                 />
                             </Tooltip>

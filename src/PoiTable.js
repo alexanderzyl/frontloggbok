@@ -1,20 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {Switch, Table} from "antd";
+import {Button, Switch, Table, Tooltip} from "antd";
 import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
 import {useParams} from "react-router-dom";
+import {CopyOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from "@ant-design/icons";
+import {handleCopyLink, handleGotoMap, handleGotoTable, navigateToPublicGroup} from "./utils/navigations";
 
 const PoiTable = ({getPois}) => {
     const { shortId } = useParams();
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const [userPois, setUserPois] = useState([]);
+    const [hasGroups, setHasGroups] = useState(false);
 
     const fetchUserPois = () => {
             getPois(shortId).then(
                 (res) => {
+                    console.log('Fetched user pois:', res.data);
                     setUserPois(res.data);
                 }
             ).catch(
@@ -81,6 +85,58 @@ const PoiTable = ({getPois}) => {
                 />
             ),
         },
+        ...(hasGroups ? [
+        {
+            title: 'Groups',
+            dataIndex: 'user_poi_groups',
+            key: 'user_poi_groups',
+            render: (text, record) => (
+                <div>
+                    {text.map(group => (
+                        <div key={group.name} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                            <div style={{ marginRight: '8px' }}>{group.name}</div>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                {group.is_public ? (
+                                    <>
+                                        <Tooltip title="Navigate to link" style={{ marginRight: '8px' }}>
+                                            <Button
+                                                icon={<LinkOutlined />}
+                                                onClick={() => navigateToPublicGroup(group.short_id)}
+                                                style={{ marginRight: '8px' }}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title="Copy link">
+                                            <Button
+                                                icon={<CopyOutlined />}
+                                                onClick={() => handleCopyLink(group.short_id)}
+                                                style={{ marginLeft: '8px' }}
+                                            />
+                                        </Tooltip>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Tooltip title="Edit in table" style={{ marginRight: '8px' }}>
+                                            <Button
+                                                icon={<TableOutlined />}
+                                                onClick={() => handleGotoTable(group.short_id)}
+                                                style={{ marginRight: '8px' }}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title="Edit in map">
+                                            <Button
+                                                icon={<EnvironmentOutlined />}
+                                                onClick={() => handleGotoMap(group.short_id)}
+                                                style={{ marginLeft: '8px' }}
+                                            />
+                                        </Tooltip>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ),
+        }] : []),
         {
             title: 'Published',
             dataIndex: 'is_public',
@@ -122,6 +178,13 @@ const PoiTable = ({getPois}) => {
     useEffect(() => {
         fetchUserPois();
     }, []);
+
+    useEffect(() => {
+        if (userPois && userPois.length > 0) {
+            // Check if any user data contains the 'user_poi_groups' field
+            setHasGroups(userPois.some(record => record.user_poi_groups));
+        }
+    }, [userPois]);
 
     return (<Table columns={columns} dataSource={userPois} rowKey="shortId" />);
 }
