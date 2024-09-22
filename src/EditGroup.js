@@ -26,10 +26,15 @@ const PublishPoi = () => {
         fetchData(shortId).then();
     }, [shortId]);
 
+    const handleInvalidate = () => {
+        fetchData(shortId).then();
+    }
+
     return (
         <div className='publish-group'>
             <SortedPois npInfo={groupData} curLocation={curLocation} setCurLocation={setCurLocation} />
-            <EditMap curLocation={curLocation} setCurLocation={setCurLocation} groupData={groupData}/>
+            <EditMap curLocation={curLocation} setCurLocation={setCurLocation}
+                     groupData={groupData} invalidateParent={handleInvalidate}/>
         </div>
 
     );

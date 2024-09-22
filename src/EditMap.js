@@ -3,7 +3,7 @@ import mapboxgl from '!mapbox-gl';
 import './Map.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapboxGeocoder from "mapbox-gl-geocoder";
-import {addNewPoiPopup, createPoiMarker} from "./Markers";
+import {createPoiMarker} from "./Markers";
 import PoiPopup from "./PoiPopup";
 import {createRoot} from "react-dom/client";
 import AddNewPoiPopup from "./AddNewPoiPopup";
@@ -15,18 +15,19 @@ const createUserPoiPopup = (point) => {
     return new mapboxgl.Popup().setDOMContent(popupContainer);
 };
 
-const createAddNewPoiPopup = (lngLat, feature, group_id) => {
+const createAddNewPoiPopup = (lngLat, feature, group_id, handleInvalidate) => {
     console.log('group_id:', group_id);
     const popupContainer = document.createElement('div');
     const root = createRoot(popupContainer);
-    root.render(<AddNewPoiPopup lngLat={lngLat} feature={feature} group_id={group_id} />);
+    root.render(<AddNewPoiPopup lngLat={lngLat} feature={feature} group_id={group_id}
+                                invalidateParent={handleInvalidate} />);
     return new mapboxgl.Popup().setLngLat(lngLat).setDOMContent(popupContainer);
 }
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-const GroupMap = ({curLocation, setCurLocation, groupData}) => {
+const GroupMap = ({curLocation, setCurLocation, groupData, invalidateParent}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
@@ -34,6 +35,7 @@ const GroupMap = ({curLocation, setCurLocation, groupData}) => {
     const initLon=  41.8;
     const markers = useRef([]);
     const groupDataRef = useRef(groupData);
+    const invalidateParentRef = useRef(invalidateParent);
 
     async function addMarkers() {
         // Clear existing markers
@@ -111,7 +113,10 @@ const GroupMap = ({curLocation, setCurLocation, groupData}) => {
                 let feature = features[0];
 
                 // Display the feature information
-                let popup = createAddNewPoiPopup(e.lngLat, feature, groupDataRef.current.short_id);
+                let popup = createAddNewPoiPopup(
+                    e.lngLat, feature,
+                    groupDataRef.current.short_id,
+                    invalidateParentRef.current);
                 popup.addTo(map.current);
             } else {
                 alert('No features at clicked point');
@@ -143,6 +148,15 @@ const GroupMap = ({curLocation, setCurLocation, groupData}) => {
             addMarkers().then();
         }
     }, [groupData]);
+
+    useEffect(() => {
+        if (invalidateParent) {
+            invalidateParentRef.current = invalidateParent;
+        }
+    }, [invalidateParent]);
+    const handleInvalidate = () => {
+        invalidateParentRef.current();
+    }
 
     return (
         <div>

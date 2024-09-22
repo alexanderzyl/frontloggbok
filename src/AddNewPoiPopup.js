@@ -5,7 +5,7 @@ import {message} from "antd";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-const AddNewPoiPopup = ({lngLat, feature, group_id}) => {
+const AddNewPoiPopup = ({lngLat, feature, group_id, invalidateParent}) => {
     const [name, setName] = useState('');
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('automatically added');
@@ -22,6 +22,7 @@ const AddNewPoiPopup = ({lngLat, feature, group_id}) => {
         };
         axios.post(`${backendUrl}/user/add_poi`, poiData, { headers })
             .then((res) => {
+                invalidateParent();
                 message.success('New POI created successfully!').then();
             })
             .catch((err) => {

@@ -59,11 +59,3 @@ export async function createPoiMarker(poi) {
     el.style.backgroundImage = `url(${iconModule.default})`;
     return el;
 }
-
-export async function addNewPoiPopup(lngLat, mbFeature) {
-    let properties = mbFeature.properties;
-
-    // Display the feature information
-    return new mapboxgl.Popup({offset: 25}).setLngLat(lngLat).setHTML(
-        '<h3>' + mbFeature.layer.id + '</h3>' + JSON.stringify(properties, null, 2))
-}
