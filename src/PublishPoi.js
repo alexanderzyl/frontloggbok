@@ -3,10 +3,19 @@ import { useParams } from 'react-router-dom';
 import axios from "axios";
 import mapboxgl from "!mapbox-gl";
 import './Map.css';
-import {createPoiMarker, createPoiPopup} from "./Markers";
+import {createPoiMarker} from "./Markers";
+import {createRoot} from "react-dom/client";
+import PoiPopup from "./PoiPopup";
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
+
+const createUserPoiPopup = (point) => {
+    const popupContainer = document.createElement('div');
+    const root = createRoot(popupContainer);
+    root.render(<PoiPopup point={point} />);
+    return new mapboxgl.Popup().setDOMContent(popupContainer);
+};
 
 const PublishPoi = () => {
     const { shortId } = useParams();
@@ -67,11 +76,10 @@ const PublishPoi = () => {
                     center: [poiData.longitude, poiData.latitude],
                     zoom: 15
                 });
-                const el = document.createElement('div');
-                el.className = 'marker-poi';
-                const popup = createPoiPopup(poiData);
-                // const popup = new mapboxgl.Popup({ offset: 25 })
-                new mapboxgl.Marker(el)
+                const marker_el  = await createPoiMarker(poiData);
+                const popup = createUserPoiPopup(poiData);
+
+                return new mapboxgl.Marker(marker_el)
                     .setLngLat([poiData.longitude, poiData.latitude])
                     .setPopup(popup)
                     .addTo(map.current);
