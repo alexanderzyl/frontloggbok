@@ -6,7 +6,13 @@ import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
 import {useParams} from "react-router-dom";
 import {CopyOutlined, DeleteOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from "@ant-design/icons";
-import {handleCopyLink, handleGotoMap, handleGotoTable, navigateToPublicGroup} from "./utils/navigations";
+import {
+    handleCopyLink, handleCopyPoiLink,
+    handleGotoMap,
+    handleGotoTable,
+    navigateToPublicGroup,
+    navigateToPublicPoi
+} from "./utils/navigations";
 
 const PoiTable = ({getPois}) => {
     const { shortId } = useParams();
@@ -159,10 +165,25 @@ const PoiTable = ({getPois}) => {
             render: (text, record) => (
                 <>
                     {record.is_public ? (
-                        <a href={`/p/${record.short_id}`} target="_blank">View</a>
-                    ) : (
+                        <div>
+                            <Tooltip title="Navigate to link">
+                                <Button
+                                    icon={<LinkOutlined/>}
+                                    onClick={() => navigateToPublicPoi(record.short_id)}
+                                    style={{marginRight: '8px'}}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Copy link">
+                                <Button
+                                    icon={<CopyOutlined/>}
+                                    onClick={() => handleCopyPoiLink(record.short_id)}
+                                    style={{marginLeft: '8px'}}
+                                />
+                            </Tooltip>
+                            </div>
+                        ) : (
                         <span>Not published</span>
-                    )}
+                        )}
                 </>
             ),
         },
@@ -173,7 +194,7 @@ const PoiTable = ({getPois}) => {
             render: (text, record) => (
                 <DeleteOutlined
                     onClick={() => handleDelete(record.short_id)}
-                    style={{ cursor: 'pointer', color: 'red' }}
+                    style={{cursor: 'pointer', color: 'red'}}
                 />
             ),
         }
