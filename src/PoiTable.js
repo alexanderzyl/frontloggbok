@@ -84,6 +84,7 @@ const PoiTable = ({getPois}) => {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            responsive: ['md', 'lg', 'xl'],
             // sorter: (a, b) => a.description.localeCompare(b.description),
             render: (text, record) => (
                 <EditableCell
@@ -97,6 +98,7 @@ const PoiTable = ({getPois}) => {
             title: 'Groups',
             dataIndex: 'user_poi_groups',
             key: 'user_poi_groups',
+            responsive: ['md', 'lg', 'xl'],
             render: (text, record) => (
                 <div>
                     {text.map(group => (
@@ -211,7 +213,12 @@ const PoiTable = ({getPois}) => {
         }
     }, [userPois]);
 
-    return (<Table columns={columns} dataSource={userPois} rowKey="shortId" />);
+    return (<Table
+        columns={columns}
+        dataSource={userPois}
+        rowKey="shortId"
+        scroll={{ x: 'max-content' }}
+    />);
 }
 
 export default PoiTable;

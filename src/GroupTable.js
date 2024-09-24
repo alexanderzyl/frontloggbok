@@ -65,6 +65,7 @@ const GroupTable = () => {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            responsive: ['md', 'lg', 'xl'],
             render: (text, record) => (
                 <EditableCell
                     value={text}
@@ -180,6 +181,7 @@ const GroupTable = () => {
                 columns={columns}
                 rowClassName="editable-row"
                 rowKey="short_id"
+                scroll={{ x: 'max-content' }}
             />
         </div>
     );
