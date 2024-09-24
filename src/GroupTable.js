@@ -181,7 +181,7 @@ const GroupTable = () => {
                 columns={columns}
                 rowClassName="editable-row"
                 rowKey="short_id"
-                scroll={{ x: 'max-content' }}
+                scroll={{ x: 768 }}
             />
         </div>
     );

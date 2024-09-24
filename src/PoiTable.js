@@ -215,9 +215,10 @@ const PoiTable = ({getPois}) => {
 
     return (<Table
         columns={columns}
+        rowClassName="editable-row"
         dataSource={userPois}
         rowKey="shortId"
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: 768 }}
     />);
 }
 
