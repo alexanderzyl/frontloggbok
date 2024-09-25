@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     if (!token || token === 'undefined') {
@@ -16,3 +18,8 @@ export const getNonAuthHeaders = () => {
         'Content-Type': 'application/json',
     };
 }
+
+export const fetchUser = async () => {
+    const headers = getAuthHeaders();
+    return  axios.get(`${backendUrl}/user/me`, { headers });
+};
