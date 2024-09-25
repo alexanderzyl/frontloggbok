@@ -4,11 +4,13 @@ import './PublishGroup.css';
 import SortedPois from "./SortedPois";
 import {getOwnGroup} from "./utils/data_fetchers";
 import EditMap from "./EditMap";
+import {Button, Drawer} from "antd";
 
 const PublishPoi = () => {
     const { shortId } = useParams();
     const [groupData, setGroupData] = useState({});
     const [curLocation, setCurLocation] = useState({});
+    const [drawerVisible, setDrawerVisible] = useState(false);
 
     const fetchData = async (shortId) => {
         getOwnGroup(shortId).then(
@@ -30,9 +32,20 @@ const PublishPoi = () => {
         fetchData(shortId).then();
     }
 
+    function showDrawer() {
+        setDrawerVisible(true);
+    }
+
+    let closeDrawer = () => {
+        setDrawerVisible(false);
+    }
+
     return (
         <div className='publish-group'>
+            <Button type="primary" onClick={showDrawer}>Points</Button>
+            <Drawer title="Points" placement="left"  onClose={closeDrawer} visible={drawerVisible}>
             <SortedPois npInfo={groupData} curLocation={curLocation} setCurLocation={setCurLocation} />
+            </Drawer>
             <EditMap curLocation={curLocation} setCurLocation={setCurLocation}
                      groupData={groupData} invalidateParent={handleInvalidate}/>
         </div>
