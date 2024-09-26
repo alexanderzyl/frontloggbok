@@ -26,18 +26,18 @@ const User = () => {
 
     const items = [
         {
-            key: 'groups',
-            label: 'All Groups',
-            children: <GroupTable />,
-        },
-        {
             key: 'points',
             label: 'All Points',
             children: <PoiTable getPois={getAllUserPois} />,
         },
+        {
+            key: 'groups',
+            label: 'All Groups',
+            children: <GroupTable />,
+        },
     ];
 
-    return <Tabs defaultActiveKey="groups" items={items} />;
+    return <Tabs defaultActiveKey="points" items={items} />;
 };
 
 export default User;
