@@ -21,7 +21,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/user" element={<User />} />
                 <Route path="/p/:shortId" element={<PublishPoi />} />
                 <Route path="/g/:shortId" element={<PublishGroup />} />

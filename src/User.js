@@ -2,26 +2,19 @@ import React, {useEffect, useState} from 'react';
 import { Tabs } from 'antd';
 import PoiTable from "./PoiTable";
 import GroupTable from "./GroupTable";
-import axios from "axios";
-import {getAuthHeaders} from "./utils/auth";
+import {fetchUser} from "./utils/auth";
 import {getAllUserPois} from "./utils/data_fetchers";
 
 const User = () => {
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [curUser, setCurUser] = useState({});
 
-    const fetchUser = async () => {
-        try {
-            const headers = getAuthHeaders();
-            const res = await axios.get(`${backendUrl}/user/me`, { headers });
-            setCurUser(res.data);
-        } catch (err) {
-            window.location.href = '/';
-        }
-    };
-
     useEffect(() => {
-        fetchUser().then();
+        fetchUser().then(userData => {
+            setCurUser(userData.data);
+        })
+        .catch(err => {
+            console.error('Failed to fetch user data:', err);
+        });
     }, []);
 
     const items = [

@@ -20,7 +20,7 @@ const Login = () => {
                 const { access_token } = res.data;
                 localStorage.setItem('token', access_token);
                 setIsLoggedIn(true);
-                window.location.href = '/user';
+                // window.location.href = '/user';
             } catch (err) {
                 console.error('Authentication failed:', err);
             }
