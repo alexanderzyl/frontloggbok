@@ -10,6 +10,7 @@ const User = () => {
 
     useEffect(() => {
         fetchUser().then(userData => {
+            console.log('User data:', userData.data);
             setCurUser(userData.data);
         })
         .catch(err => {

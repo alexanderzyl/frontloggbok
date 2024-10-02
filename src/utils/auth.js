@@ -1,10 +1,11 @@
 import axios from "axios";
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 export const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     if (!token || token === 'undefined') {
         // Redirect to login if no token
-        window.location.href = '/';
+        // window.location.href = '/';
         return;
     }
     return {

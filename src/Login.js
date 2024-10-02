@@ -34,14 +34,12 @@ const Login = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
-            fetchUser().then(userData => {
-                setIsLoggedIn(true);
-            }).catch(err => {
-                setIsLoggedIn(false);
-            });
-        } else {
+        if (token === 'undefined') {
             setIsLoggedIn(false);
+        }
+        else
+        {
+            setIsLoggedIn(true);
         }
     }, []);
 
