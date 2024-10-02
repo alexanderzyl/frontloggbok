@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
-import { fetchUser } from "./utils/auth";
+import {fetchUser} from "./utils/auth";
 
-const Login = () => {
+const Login = ({onLoggedInChange}) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -20,7 +20,6 @@ const Login = () => {
                 const { access_token } = res.data;
                 localStorage.setItem('token', access_token);
                 setIsLoggedIn(true);
-                // window.location.href = '/user';
             } catch (err) {
                 console.error('Authentication failed:', err);
             }
@@ -33,15 +32,17 @@ const Login = () => {
     });
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token === 'undefined') {
-            setIsLoggedIn(false);
-        }
-        else
-        {
+        fetchUser().then(_userData => {
             setIsLoggedIn(true);
-        }
+        })
+            .catch(err => {
+                setIsLoggedIn(false);
+            });
     }, []);
+
+    useEffect(() => {
+        onLoggedInChange(isLoggedIn);
+    }, [isLoggedIn]);
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -52,12 +53,12 @@ const Login = () => {
         <div>
             {isLoggedIn ? (
                 <div>
-                    <h1>Already logged in</h1>
+                    {/*<h1>Already logged in</h1>*/}
                     <button onClick={logout}>Logout</button>
                 </div>
             ) : (
                 <div>
-                    <h1>Logbok</h1>
+                    {/*<h1>Logbok</h1>*/}
                     <button onClick={login}>Login with Google</button>
                 </div>
             )}
@@ -65,4 +66,17 @@ const Login = () => {
     );
 };
 
-export default Login;
+const withLogin = (WrappedComponent) => {
+    return (props) => {
+        const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+        return (
+            <div>
+                <Login onLoggedInChange={setIsLoggedIn} />
+                {isLoggedIn && <WrappedComponent {...props} />}
+            </div>
+        );
+    };
+};
+
+export default withLogin;

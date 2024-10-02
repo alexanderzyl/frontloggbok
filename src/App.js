@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PoiBaseApp from "./PoiBaseApp";
-import Login from "./Login";
 import PublishPoi from "./PublishPoi";
 import User from "./User";
 import PublishGroup from "./PublishGroup";
 import PoiTable from "./PoiTable";
 import {getOwnGroupPois} from "./utils/data_fetchers";
 import EditGroup from "./EditGroup";
+import withLogin from "./Login";
 
 const App = () => {
     useEffect(() => {
@@ -18,15 +18,18 @@ const App = () => {
         }
     }, []);
 
+    const WLUser = withLogin(User);
+    const WLPoiTable = withLogin(PoiTable);
+    const WLEditGroup = withLogin(EditGroup);
+
     return (
         <Router>
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/user" element={<User />} />
+                <Route path="/" element={<WLUser />} />
                 <Route path="/p/:shortId" element={<PublishPoi />} />
                 <Route path="/g/:shortId" element={<PublishGroup />} />
-                <Route path={"/poiingroup/:shortId"} element={<PoiTable getPois={getOwnGroupPois} />} />
-                <Route path={"/editgroup/:shortId"} element={<EditGroup />} />
+                <Route path={"/poiingroup/:shortId"} element={<WLPoiTable getPois={getOwnGroupPois} />} />
+                <Route path={"/editgroup/:shortId"} element={<WLEditGroup />} />
                 <Route path="/poibase" element={<PoiBaseApp />} />
             </Routes>
         </Router>
