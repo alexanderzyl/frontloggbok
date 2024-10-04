@@ -6,6 +6,7 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 import {createRoot} from "react-dom/client";
 import AddNewPoiPopup from "./AddNewPoiPopup";
 import {createPoiMarker} from "./Markers";
+import PoiPopup from "./PoiPopup";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -23,11 +24,16 @@ const PoiMap = ({pois, curLocation, setCurLocation, invalidateParent}) => {
     const createUserPoiPopup = (point) => {
         const popupContainer = document.createElement('div');
         const root = createRoot(popupContainer);
-        root.render(<AddNewPoiPopup point={point}
-                                    invalidateParent={invalidateParentRef.current}
-        />);
+        root.render(<PoiPopup point={point} />);
         return new mapboxgl.Popup().setDOMContent(popupContainer);
     };
+
+    const createAddNewPoiPopup = (lngLat, feature, handleInvalidate) => {
+        const popupContainer = document.createElement('div');
+        const root = createRoot(popupContainer);
+        root.render(<AddNewPoiPopup lngLat={lngLat} feature={feature} invalidateParent={handleInvalidate} />);
+        return new mapboxgl.Popup().setLngLat(lngLat).setDOMContent(popupContainer);
+    }
 
     async function addMarkers() {
         // Clear existing markers
@@ -41,13 +47,14 @@ const PoiMap = ({pois, curLocation, setCurLocation, invalidateParent}) => {
             // Add markers to the map
             const psels = await Promise.all(pois.map(async point => {
                 const el = await createPoiMarker(point);
+                el.classList.add('poi-marker');
                 return { point, el };
             }));
-            console.log('Markers:', psels);
+            // console.log('Markers:', psels);
             psels.forEach(({point,el}) => {
                 const marker = new mapboxgl.Marker(el)
                     .setLngLat([point.longitude, point.latitude])
-                    // .setPopup(createUserPoiPopup(point))
+                    .setPopup(createUserPoiPopup(point))
                     .addTo(map.current);
                 marker.getElement().addEventListener('click', () => {
                     setCurLocation(point);
@@ -93,9 +100,23 @@ const PoiMap = ({pois, curLocation, setCurLocation, invalidateParent}) => {
             });
 
         map.current.on('click', function (e) {
-            setCurLocation({latitude: e.lngLat.lat, longitude: e.lngLat.lng});
-            let popup = createUserPoiPopup(e.lngLat, invalidateParent.current);
-            popup.addTo(map.current);
+            if (e.originalEvent && e.originalEvent.target.classList.contains('poi-marker')) {
+                return;
+            }
+            // Use queryRenderedFeatures to inspect features under the mouse
+            let features = map.current.queryRenderedFeatures(e.point);
+
+            if (features.length) {
+                let feature = features[0];
+
+                // Display the feature information
+                let popup = createAddNewPoiPopup(
+                    e.lngLat, feature,
+                    invalidateParentRef.current);
+                popup.addTo(map.current);
+            } else {
+                alert('No features at clicked point');
+            }
         });
 
 

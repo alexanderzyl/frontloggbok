@@ -12,7 +12,7 @@ const User = () => {
     const fetchUserPois = () => {
         getAllUserPois().then(
             (res) => {
-                console.log('User pois:', res.data);
+                // console.log('User pois:', res.data);
                 setUserPois(res.data);
             }
         ).catch(
