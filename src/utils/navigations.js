@@ -1,19 +1,7 @@
 import {message} from "antd";
 
 export const navigateToPublicPoi = (shortId) => {
-    window.location.href = `/p/${shortId}`;
-};
-
-export const handleCopyLink = (shortId) => {
-    const link = `${window.location.origin}/g/${shortId}`;
-    navigator.clipboard.writeText(link).then(
-        () => {
-            message.success('Link copied to clipboard!').then();
-        },
-        (err) => {
-            message.error('Failed to copy link').then();
-        }
-    );
+    window.open(`/p/${shortId}`, '_blank');
 };
 
 export const handleCopyPoiLink = (shortId) => {
@@ -27,11 +15,3 @@ export const handleCopyPoiLink = (shortId) => {
         }
     );
 };
-
-export function handleGotoTable(short_id) {
-    window.location.href = `/poiingroup/${short_id}`;
-}
-
-export function handleGotoMap(short_id) {
-    window.location.href = `/editgroup/${short_id}`;
-}

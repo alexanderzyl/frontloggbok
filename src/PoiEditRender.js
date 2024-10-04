@@ -101,14 +101,17 @@ class PoiEditRenderer {
                 ),
             },
             {
-                title: '',
+                title: 'Actions',
                 dataIndex: 'short_id',
                 key: 'delete',
                 render: (text, record) => (
-                    <DeleteOutlined
-                        onClick={() => this.handleDelete(record.short_id)}
-                        style={{cursor: 'pointer', color: 'red'}}
-                    />
+                    <Tooltip title="Delete">
+                        <Button
+                            icon={<DeleteOutlined/>}
+                            onClick={() => this.handleDelete(record.short_id)}
+                            style={{color: 'red'}}
+                        />
+                    </Tooltip>
                 ),
             }
         ];
@@ -121,9 +124,9 @@ class PoiEditRenderer {
             const value = poi[dataIndex];
 
             return (
-                <div key={key || dataIndex}>
-                    <strong>{title}: </strong>
-                    {render ? render(value, poi) : value.toString()}
+                <div key={key || dataIndex} style={{ display: 'flex', alignItems: 'flex-start' }}>
+                    {title.length > 0 && <strong style={{ flex: '0 0 30%' }}>{title}: </strong>}
+                    <div style={{ flex: '0 0 70%' }}>{render ? render(value, poi) : value.toString()}</div>
                 </div>
             );
         });
