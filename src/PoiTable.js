@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Switch, Table, Tooltip} from "antd";
+import {Button, Collapse, Switch, Table, Tooltip} from "antd";
 import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
@@ -9,6 +9,9 @@ import {
     handleCopyPoiLink,
     navigateToPublicPoi
 } from "./utils/navigations";
+import { useMediaQuery } from 'react-responsive';
+
+const { Panel } = Collapse;
 
 const PoiTable = ({pois, invalidateParent}) => {
 
@@ -116,13 +119,46 @@ const PoiTable = ({pois, invalidateParent}) => {
         }
     ];
 
-    return (<Table
-        columns={columns}
-        rowClassName="editable-row"
-        dataSource={pois}
-        rowKey="shortId"
-        scroll={{ x: 768 }}
-    />);
+    const isMobile = useMediaQuery({ maxWidth: 767 });
+
+    // Function to render the content inside Collapse.Panel
+    const renderPanelContent = (poi) => {
+        return columns.map(column => {
+            const { dataIndex, key, title, render } = column;
+            const value = poi[dataIndex];
+
+            return (
+                <div key={key || dataIndex}>
+                    <strong>{title}: </strong>
+                    {render ? render(value, poi) : value.toString()}
+                </div>
+            );
+        });
+    };
+
+    return (
+        <>
+            {isMobile ? (
+                // Render Collapse (Accordion) for mobile view
+                <Collapse accordion>
+                    {pois.map((poi, index) => (
+                        <Panel header={poi.name} key={poi.shortId}>
+                            {renderPanelContent(poi)}
+                        </Panel>
+                    ))}
+                </Collapse>
+            ) : (
+                // Render Table for desktop view
+                <Table
+                    columns={columns}
+                    rowClassName="editable-row"
+                    dataSource={pois}
+                    rowKey="shortId"
+                    scroll={{ x: 768 }}
+                />
+            )}
+        </>
+    );
 }
 
 export default PoiTable;
