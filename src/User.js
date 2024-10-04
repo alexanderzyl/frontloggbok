@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import PoiTable from "./PoiTable";
 import {getAllUserPois} from "./utils/data_fetchers";
 import PoiMap from "./PoiMap";
+import PoiEditRenderer from "./PoiEditRender";
 
 const User = () => {
 
@@ -30,6 +31,8 @@ const User = () => {
         fetchUserPois();
     }
 
+    const poiEditRender = new PoiEditRenderer(invalidateComponent);
+
     const items = [
         {
             key: 'map',
@@ -37,13 +40,14 @@ const User = () => {
             children: <PoiMap pois={userPois}
                               curLocation={curLocation}
                               setCurLocation={setCurLocation}
+                              poiEditRender={poiEditRender}
                               invalidateParent={invalidateComponent}
             />,
         },
         {
             key: 'points',
             label: 'All Points',
-            children: <PoiTable pois={userPois} invalidateParent={invalidateComponent}/>,
+            children: <PoiTable poiEditRender={poiEditRender} pois={userPois} />,
         },
     ];
 

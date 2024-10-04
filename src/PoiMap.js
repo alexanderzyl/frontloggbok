@@ -12,7 +12,7 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 
 
-const PoiMap = ({pois, curLocation, setCurLocation, invalidateParent}) => {
+const PoiMap = ({pois, curLocation, setCurLocation, poiEditRender, invalidateParent}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
@@ -21,10 +21,20 @@ const PoiMap = ({pois, curLocation, setCurLocation, invalidateParent}) => {
     const markers = useRef([]);
     const invalidateParentRef = useRef(invalidateParent);
 
+    // const createUserPoiPopup = (point) => {
+    //     const popupContainer = document.createElement('div');
+    //     const root = createRoot(popupContainer);
+    //     root.render(<PoiPopup point={point} />);
+    //     return new mapboxgl.Popup().setDOMContent(popupContainer);
+    // };
     const createUserPoiPopup = (point) => {
+        // Create a container element for the popup content
         const popupContainer = document.createElement('div');
+
+        const popupContent = poiEditRender.renderPoi(point);
         const root = createRoot(popupContainer);
-        root.render(<PoiPopup point={point} />);
+        root.render(popupContent);
+
         return new mapboxgl.Popup().setDOMContent(popupContainer);
     };
 
@@ -33,7 +43,7 @@ const PoiMap = ({pois, curLocation, setCurLocation, invalidateParent}) => {
         const root = createRoot(popupContainer);
         root.render(<AddNewPoiPopup lngLat={lngLat} feature={feature} invalidateParent={handleInvalidate} />);
         return new mapboxgl.Popup().setLngLat(lngLat).setDOMContent(popupContainer);
-    }
+    };
 
     async function addMarkers() {
         // Clear existing markers

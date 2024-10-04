@@ -1,9 +1,5 @@
 import {message} from "antd";
 
-export const navigateToPublicGroup = (shortId) => {
-    window.location.href = `/g/${shortId}`;
-};
-
 export const navigateToPublicPoi = (shortId) => {
     window.location.href = `/p/${shortId}`;
 };
