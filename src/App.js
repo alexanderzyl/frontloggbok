@@ -3,9 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PoiBaseApp from "./PoiBaseApp";
 import PublishPoi from "./PublishPoi";
 import User from "./User";
-import PublishGroup from "./PublishGroup";
 import PoiTable from "./PoiTable";
-import {getOwnGroupPois} from "./utils/data_fetchers";
 import EditGroup from "./EditGroup";
 import withLogin from "./Login";
 
@@ -19,8 +17,6 @@ const App = () => {
     }, []);
 
     const WLUser = withLogin(User);
-    const WLPoiTable = withLogin(PoiTable);
-    const WLEditGroup = withLogin(EditGroup);
 
     return (
         <Router>

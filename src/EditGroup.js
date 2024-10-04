@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import './PublishGroup.css';
 import SortedPois from "./SortedPois";
 import {getOwnGroup} from "./utils/data_fetchers";
-import EditMap from "./EditMap";
 import {Button, Drawer} from "antd";
+import PoiMap from "./PoiMap";
 
 const PublishPoi = () => {
     const { shortId } = useParams();
@@ -46,8 +46,11 @@ const PublishPoi = () => {
             <Drawer title="Points" placement="left"  onClose={closeDrawer} visible={drawerVisible}>
             <SortedPois npInfo={groupData} curLocation={curLocation} setCurLocation={setCurLocation} />
             </Drawer>
-            <EditMap curLocation={curLocation} setCurLocation={setCurLocation}
-                     groupData={groupData} invalidateParent={handleInvalidate}/>
+            <PoiMap pois={groupData.pois}
+                    curLocation={curLocation}
+                    setCurLocation={setCurLocation}
+                    invalidateParent={handleInvalidate}
+            />
         </div>
 
     );
