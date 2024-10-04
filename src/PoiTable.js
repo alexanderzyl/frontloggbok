@@ -1,45 +1,25 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Button, Switch, Table, Tooltip} from "antd";
 import axios from "axios";
 import EditableCell from "./EditableCell";
 import {render} from "react-dom";
 import {getAuthHeaders} from "./utils/auth";
-import {useParams} from "react-router-dom";
-import {CopyOutlined, DeleteOutlined, EnvironmentOutlined, LinkOutlined, TableOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined, LinkOutlined} from "@ant-design/icons";
 import {
-    handleCopyLink, handleCopyPoiLink,
-    handleGotoMap,
-    handleGotoTable,
-    navigateToPublicGroup,
+    handleCopyPoiLink,
     navigateToPublicPoi
 } from "./utils/navigations";
 
-const PoiTable = ({getPois}) => {
-    const { shortId } = useParams();
+const PoiTable = ({pois, invalidateParent}) => {
+
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
-
-    const [userPois, setUserPois] = useState([]);
-    const [hasGroups, setHasGroups] = useState(false);
-
-    const fetchUserPois = () => {
-            getPois(shortId).then(
-                (res) => {
-                    console.log('Fetched user pois:', res.data);
-                    setUserPois(res.data);
-                }
-            ).catch(
-                (err) => {
-                    console.error('Failed to fetch poi data:', err);
-                }
-            );
-    }
 
     const handleSwitchChange = (checked, record) => {
         // Handle the change event (e.g., make an API request to update the is_public field)
         const headers = getAuthHeaders();
         axios.put(`${backendUrl}/user/publish_poi/${record.short_id}/${checked}`, {}, { headers })
-            .then(response => {
-                fetchUserPois();
+            .then(() => {
+                invalidateParent();
             })
             .catch(error => {
                 console.error('Failed to update the poi:', error);
@@ -50,8 +30,8 @@ const PoiTable = ({getPois}) => {
         if (window.confirm("Are you sure you want to delete this point?")) {
             const headers = getAuthHeaders();
             axios.delete(`${backendUrl}/user/delete_poi/${short_id}`, {headers})
-                .then(response => {
-                    fetchUserPois();
+                .then( ()=> {
+                    invalidateParent();
                 })
                 .catch(error => {
                     console.error('Failed to delete the poi:', error);
@@ -63,7 +43,7 @@ const PoiTable = ({getPois}) => {
         const headers = getAuthHeaders();
         const updateData = { [dataIndex]: value, 'short_id': short_id };
         await axios.put(`${backendUrl}/user/change_poi_${dataIndex}`, updateData, { headers })
-            .then(() => fetchUserPois())
+            .then(() => invalidateParent())
             .catch(error => console.error('Failed to update the group:', error));
     };
 
@@ -80,72 +60,6 @@ const PoiTable = ({getPois}) => {
                 />
             ),
         },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-            responsive: ['md', 'lg', 'xl'],
-            // sorter: (a, b) => a.description.localeCompare(b.description),
-            render: (text, record) => (
-                <EditableCell
-                    value={text}
-                    onChange={(value) => handleSave(record.short_id, 'description', value)}
-                />
-            ),
-        },
-        ...(hasGroups ? [
-        {
-            title: 'Groups',
-            dataIndex: 'user_poi_groups',
-            key: 'user_poi_groups',
-            responsive: ['md', 'lg', 'xl'],
-            render: (text, record) => (
-                <div>
-                    {text.map(group => (
-                        <div key={group.name} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                            <div style={{ marginRight: '8px' }}>{group.name}</div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                {group.is_public ? (
-                                    <>
-                                        <Tooltip title="Navigate to link" style={{ marginRight: '8px' }}>
-                                            <Button
-                                                icon={<LinkOutlined />}
-                                                onClick={() => navigateToPublicGroup(group.short_id)}
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title="Copy link">
-                                            <Button
-                                                icon={<CopyOutlined />}
-                                                onClick={() => handleCopyLink(group.short_id)}
-                                                style={{ marginLeft: '8px' }}
-                                            />
-                                        </Tooltip>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Tooltip title="Edit in table" style={{ marginRight: '8px' }}>
-                                            <Button
-                                                icon={<TableOutlined />}
-                                                onClick={() => handleGotoTable(group.short_id)}
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title="Edit in map">
-                                            <Button
-                                                icon={<EnvironmentOutlined />}
-                                                onClick={() => handleGotoMap(group.short_id)}
-                                                style={{ marginLeft: '8px' }}
-                                            />
-                                        </Tooltip>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ),
-        }] : []),
         {
             title: 'Published',
             dataIndex: 'is_public',
@@ -202,21 +116,10 @@ const PoiTable = ({getPois}) => {
         }
     ];
 
-    useEffect(() => {
-        fetchUserPois();
-    }, []);
-
-    useEffect(() => {
-        if (userPois && userPois.length > 0) {
-            // Check if any user data contains the 'user_poi_groups' field
-            setHasGroups(userPois.some(record => record.user_poi_groups));
-        }
-    }, [userPois]);
-
     return (<Table
         columns={columns}
         rowClassName="editable-row"
-        dataSource={userPois}
+        dataSource={pois}
         rowKey="shortId"
         scroll={{ x: 768 }}
     />);

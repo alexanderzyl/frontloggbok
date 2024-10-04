@@ -27,9 +27,9 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<WLUser />} />
                 <Route path="/p/:shortId" element={<PublishPoi />} />
-                <Route path="/g/:shortId" element={<PublishGroup />} />
-                <Route path={"/poiingroup/:shortId"} element={<WLPoiTable getPois={getOwnGroupPois} />} />
-                <Route path={"/editgroup/:shortId"} element={<WLEditGroup />} />
+                {/*<Route path="/g/:shortId" element={<PublishGroup />} />*/}
+                {/*<Route path={"/poiingroup/:shortId"} element={<WLPoiTable getPois={getOwnGroupPois} />} />*/}
+                {/*<Route path={"/editgroup/:shortId"} element={<WLEditGroup />} />*/}
                 <Route path="/poibase" element={<PoiBaseApp />} />
             </Routes>
         </Router>
