@@ -1,10 +1,10 @@
 import React from "react";
 import EditableCell from "./EditableCell";
 import {Button, Switch, Tooltip} from "antd";
-import {CopyOutlined, DeleteOutlined, LinkOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined, EditOutlined, LinkOutlined} from "@ant-design/icons";
 import {getAuthHeaders} from "./utils/auth";
 import axios from "axios";
-import {handleCopyPoiLink, navigateToPublicPoi} from "./utils/navigations";
+import {handleCopyPoiLink, navigateToEditFlyer, navigateToPublicPoi} from "./utils/navigations";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -72,7 +72,7 @@ class PoiEditRenderer {
                 ),
             },
             {
-                title: 'View',
+                title: 'Flyer',
                 dataIndex: 'short_id',
                 key: 'url',
                 render: (text, record) => (
@@ -95,7 +95,15 @@ class PoiEditRenderer {
                                 </Tooltip>
                             </div>
                         ) : (
-                            <span>Not published</span>
+                            <div>
+                                <Tooltip title="Edit flyer">
+                                    <Button
+                                        icon={<EditOutlined/>}
+                                        onClick={() => navigateToEditFlyer(record.short_id)}
+                                        style={{marginRight: '8px'}}
+                                    />
+                                </Tooltip>
+                            </div>
                         )}
                     </>
                 ),

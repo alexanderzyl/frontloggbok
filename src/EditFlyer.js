@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Tabs, Input, Typography } from 'antd';
+import { Tabs, Input } from 'antd';
 import ReactMarkdown from 'react-markdown';
+import {useParams} from "react-router-dom";
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
-const { Title } = Typography;
 
-const MarkdownEdit = () => {
+const EditFlyer = () => {
+    const { shortId } = useParams();
     const [markdown, setMarkdown] = useState(`# Hello World!\n\nThis is a simple markdown example.\n\n## Subheading\n\n- List item 1\n- List item 2`);
 
     const handleMarkdownChange = (e) => {
@@ -15,7 +16,6 @@ const MarkdownEdit = () => {
 
     return (
         <div>
-            <Title level={2}>Markdown Editor and Preview</Title>
             <Tabs defaultActiveKey="1">
                 <TabPane tab="Editor" key="1">
                     <TextArea rows={10} value={markdown} onChange={handleMarkdownChange} />
@@ -28,4 +28,4 @@ const MarkdownEdit = () => {
     );
 };
 
-export default MarkdownEdit;
+export default EditFlyer;

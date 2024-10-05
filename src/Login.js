@@ -32,6 +32,7 @@ const Login = ({onLoggedInChange}) => {
     });
 
     useEffect(() => {
+        console.log('Checking if user is logged in');
         fetchUser().then(_userData => {
             setIsLoggedIn(true);
         })
