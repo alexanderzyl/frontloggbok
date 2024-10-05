@@ -59,26 +59,19 @@ class PoiEditRenderer {
                 ),
             },
             {
-                title: 'Published',
+                title: 'Publish',
                 dataIndex: 'is_public',
                 key: 'is_public',
                 render: (is_public, record) => (
-                    <Switch
-                        checkedChildren="Yes"
-                        unCheckedChildren="No"
-                        checked={is_public}
-                        onChange={(checked) => this.handleSwitchChange(checked, record)}
-                    />
-                ),
-            },
-            {
-                title: 'Flyer',
-                dataIndex: 'short_id',
-                key: 'url',
-                render: (text, record) => (
                     <>
+                        <Switch
+                            checkedChildren="Public"
+                            unCheckedChildren="Private"
+                            checked={is_public}
+                            onChange={(checked) => this.handleSwitchChange(checked, record)}
+                        />
                         {record.is_public ? (
-                            <div>
+                            <>
                                 <Tooltip title="Navigate to link">
                                     <Button
                                         icon={<LinkOutlined/>}
@@ -93,9 +86,9 @@ class PoiEditRenderer {
                                         style={{marginLeft: '8px'}}
                                     />
                                 </Tooltip>
-                            </div>
+                            </>
                         ) : (
-                            <div>
+                            <>
                                 <Tooltip title="Edit flyer">
                                     <Button
                                         icon={<EditOutlined/>}
@@ -103,7 +96,7 @@ class PoiEditRenderer {
                                         style={{marginRight: '8px'}}
                                     />
                                 </Tooltip>
-                            </div>
+                            </>
                         )}
                     </>
                 ),
@@ -133,8 +126,7 @@ class PoiEditRenderer {
 
             return (
                 <div key={key || dataIndex} style={{ display: 'flex', alignItems: 'flex-start' }}>
-                    {title.length > 0 && <strong style={{ flex: '0 0 30%' }}>{title}: </strong>}
-                    <div style={{ flex: '0 0 70%' }}>{render ? render(value, poi) : value.toString()}</div>
+                    {render ? render(value, poi) : value.toString()}
                 </div>
             );
         });
