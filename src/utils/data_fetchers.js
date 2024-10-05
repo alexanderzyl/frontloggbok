@@ -8,6 +8,16 @@ export const getAllUserPois = async () => {
     return axios.get(`${backendUrl}/user/pois`, { headers });
 }
 
+export const getOwnPoi = async (shortId) => {
+    const headers = getAuthHeaders();
+    return axios.get(`${backendUrl}/user/own_poi/${shortId}`, { headers });
+}
+
+export const getUserPoi = async (shortId) => {
+    const headers = getAuthHeaders();
+    return axios.get(`${backendUrl}/poi/${shortId}`, { headers });
+}
+
 export const getAllGroups = async () => {
     const headers = getAuthHeaders();
     return axios.get(`${backendUrl}/user/groups`, { headers });

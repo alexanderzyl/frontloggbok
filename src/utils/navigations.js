@@ -5,7 +5,7 @@ export const navigateToPublicPoi = (shortId) => {
 };
 
 export const navigateToEditFlyer = (shortId) => {
-    window.open(`/edit/:${shortId}`, '_blank');
+    window.open(`/edit/${shortId}`, '_blank');
 };
 
 export const handleCopyPoiLink = (shortId) => {
