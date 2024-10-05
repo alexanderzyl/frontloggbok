@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PoiBaseApp from "./PoiBaseApp";
 import PublishPoi from "./PublishPoi";
 import User from "./User";
-import PoiTable from "./PoiTable";
-import EditGroup from "./EditGroup";
 import withLogin from "./Login";
 
 const App = () => {
