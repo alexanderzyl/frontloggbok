@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import {navigate_options, setNavigateOptions} from "./utils/poi_attributes";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -18,6 +19,20 @@ function openMap(latitude, longitude) {
         url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
     }
 
+    window.open(url, '_blank');
+}
+
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function openAppleMap(latitude, longitude) {
+    const url = `maps://?saddr=&daddr=${latitude},${longitude}`;
+    window.open(url, '_blank');
+}
+
+function openGoogle(latitude, longitude) {
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
     window.open(url, '_blank');
 }
 
@@ -58,24 +73,17 @@ const async_store_poi = async (poi_id) => {
 
 const PoiPopup = ({ point }) => {
     const [iconSource, setIconSource] = useState("");
-    const handleButtonClick = (buttonType) => {
-        if(buttonType === "Map") {
-            openMap(point.latitude, point.longitude);
-        }
-        else if(buttonType === "Sygic") {
-            openSygicMap(point.latitude, point.longitude);
-        }
-        else if(buttonType === "Store") {
-            async_store_poi(curPoi.id).then();
-        }
-    };
+    const [popupOptions, setPopupOptions] = useState(navigate_options);
 
     useEffect(() => {
+        if (point === null || point === undefined) return;
         const fetchIcon = async () => {
             const icon = await getIcon();
             setIconSource(icon);
         };
         fetchIcon().then();
+        const newPopupOptions = setNavigateOptions(point.attributes);
+        setPopupOptions(newPopupOptions);
     }, [point]);
 
     return (
@@ -85,8 +93,14 @@ const PoiPopup = ({ point }) => {
                 <h2>{point.name}</h2>
             </div>
             <div>
-                <button onClick={() => handleButtonClick("Map")}>Open Map</button>
-                <button onClick={() => handleButtonClick("Sygic")}>Navigate with Sygic</button>
+                {popupOptions.open_map &&
+                    <button onClick={() => openMap(point.latitude, point.longitude)}>Open Map</button>}
+                {popupOptions.navigate_google &&
+                    <button onClick={() => openGoogle(point.latitude, point.longitude)}>Navigate with Google</button>}
+                {popupOptions.navigate_sygic &&
+                <button onClick={() => openSygicMap(point.latitude, point.longitude)}>Navigate with Sygic</button>}
+                {popupOptions.navigate_apple && isIOS() &&
+                <button onClick={() => openAppleMap(point.latitude, point.longitude)}>Navigate with Apple Maps</button>}
                 {/*<button onClick={() => handleButtonClick("Store")}>Store Poi</button>*/}
             </div>
         </div>

@@ -19,6 +19,7 @@ const EditFlyer = () => {
     const fetchOwnPoi = (shortId) => {
         getOwnPoi(shortId).then(
             (res) => {
+                // console.log('Own poi:', res.data);
                 setOwnPoi(res.data);
             }
         ).catch(
@@ -32,6 +33,10 @@ const EditFlyer = () => {
         fetchOwnPoi(shortId);
     }, []);
 
+    const invalidateParent = () => {
+        fetchOwnPoi(shortId);
+    }
+
     const items = [
         {
             key: 'editor',
@@ -39,6 +44,8 @@ const EditFlyer = () => {
             children: <FlyerEditor
                 markdown={markdown}
                 setMarkdown={setMarkdown}
+                poi={ownPoi}
+                invalidateParent={invalidateParent}
             />,
         },
         {
