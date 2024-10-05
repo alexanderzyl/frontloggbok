@@ -1,0 +1,12 @@
+.editable-row {
+    /* Existing styles for editable-row */
+}
+
+.selected-row {
+    background-color: #e6f7ff; /* Example highlight color */
+}
+
+/* Make sure pointer events are enabled on rows */
+.ant-table-row {
+    pointer-events: auto !important;
+}

@@ -9,6 +9,7 @@ const User = () => {
 
     const [curLocation, setCurLocation] = useState({});
     const [userPois, setUserPois] = useState([]);
+    const [curPoiShortId, setCurPoiShortId] = useState(null);
 
     const fetchUserPois = () => {
         getAllUserPois().then(
@@ -27,6 +28,15 @@ const User = () => {
         fetchUserPois();
     }, []);
 
+    useEffect(() => {
+        if (curPoiShortId && userPois.length > 0) {
+            const poi = userPois.find(p => p.short_id === curPoiShortId);
+            if (poi) {
+                setCurLocation({latitude: poi.latitude, longitude: poi.longitude});
+            }
+        }
+    },[curPoiShortId]);
+
     const invalidateComponent = () => {
         fetchUserPois();
     }
@@ -38,6 +48,8 @@ const User = () => {
             key: 'map',
             label: 'Map',
             children: <PoiMap pois={userPois}
+                              curPoiShortId={curPoiShortId}
+                              setCurPoiShortId={setCurPoiShortId}
                               curLocation={curLocation}
                               setCurLocation={setCurLocation}
                               poiEditRender={poiEditRender}
@@ -47,7 +59,11 @@ const User = () => {
         {
             key: 'points',
             label: 'All Points',
-            children: <PoiTable poiEditRender={poiEditRender} pois={userPois} />,
+            children: <PoiTable pois={userPois}
+                                curPoiShortId={curPoiShortId}
+                                setCurPoiShortId={setCurPoiShortId}
+                                poiEditRender={poiEditRender}
+            />,
         },
     ];
 

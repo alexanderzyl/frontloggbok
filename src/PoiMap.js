@@ -6,27 +6,20 @@ import MapboxGeocoder from "mapbox-gl-geocoder";
 import {createRoot} from "react-dom/client";
 import AddNewPoiPopup from "./AddNewPoiPopup";
 import {createPoiMarker} from "./Markers";
-import PoiPopup from "./PoiPopup";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 
 
-const PoiMap = ({pois, curLocation, setCurLocation, poiEditRender, invalidateParent}) => {
+const PoiMap = ({pois, curPoiShortId, setCurPoiShortId, curLocation, setCurLocation, poiEditRender, invalidateParent}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const geolocate = useRef(null);
     const initLat = 12.5;
     const initLon=  41.8;
-    const markers = useRef([]);
+    const markers = useRef({});
     const invalidateParentRef = useRef(invalidateParent);
 
-    // const createUserPoiPopup = (point) => {
-    //     const popupContainer = document.createElement('div');
-    //     const root = createRoot(popupContainer);
-    //     root.render(<PoiPopup point={point} />);
-    //     return new mapboxgl.Popup().setDOMContent(popupContainer);
-    // };
     const createUserPoiPopup = (point) => {
         // Create a container element for the popup content
         const popupContainer = document.createElement('div');
@@ -47,11 +40,11 @@ const PoiMap = ({pois, curLocation, setCurLocation, poiEditRender, invalidatePar
 
     async function addMarkers() {
         // Clear existing markers
-        if(markers.current.length > 0) {
-            markers.current.forEach(marker => {
+        if (Object.keys(markers.current).length > 0) {
+            Object.values(markers.current).forEach(marker => {
                 marker.remove();
             });
-            markers.current = [];
+            markers.current = {};
         }
         if (pois && Object.keys(pois).length > 0) {
             // Add markers to the map
@@ -66,10 +59,18 @@ const PoiMap = ({pois, curLocation, setCurLocation, poiEditRender, invalidatePar
                     .setLngLat([point.longitude, point.latitude])
                     .setPopup(createUserPoiPopup(point))
                     .addTo(map.current);
+                const popup = marker.getPopup();
+                popup.on('close', () => {
+                    if (curPoiShortId === point.short_id) {
+                        setCurPoiShortId(null);
+                    }});
                 marker.getElement().addEventListener('click', () => {
                     setCurLocation(point);
+                    if (curPoiShortId !== point.short_id) {
+                        setCurPoiShortId(point.short_id);
+                    }
                 });
-                markers.current.push(marker);
+                markers.current[point.short_id] = marker;
             });
         }
     }
@@ -133,8 +134,9 @@ const PoiMap = ({pois, curLocation, setCurLocation, poiEditRender, invalidatePar
     }, []);
 
     useEffect(() => {
+        // console.log('Cur location:', curLocation);
         if (curLocation && Object.keys(curLocation).length > 0 && curLocation.latitude && curLocation.longitude) {
-            console.log('Setting location:', curLocation);
+            // console.log('Setting location:', curLocation);
             const zoom = map.current.getZoom();
             map.current.flyTo({
                 center: [curLocation.longitude, curLocation.latitude],
@@ -158,6 +160,19 @@ const PoiMap = ({pois, curLocation, setCurLocation, poiEditRender, invalidatePar
             setCurLocation(bounds.getCenter());
         }
     }, [pois]);
+
+    useEffect(() => {
+        // Close all open popups
+        Object.keys(markers.current).forEach((id) => {
+            const popup = markers.current[id].getPopup();
+            if (popup && popup.isOpen()) {
+                popup.remove(); // This should close the popup in Mapbox
+            }
+        });
+        if (curPoiShortId && markers.current[curPoiShortId]) {
+            markers.current[curPoiShortId].togglePopup();
+        }
+    }, [curPoiShortId]);
 
 
     return (
