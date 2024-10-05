@@ -65,10 +65,10 @@ const Flyer = ({markdown, poi}) => {
     return (
         <div>
             <Button type="primary" onClick={showDrawer}>
-                Open Drawer
+                Information
             </Button>
             <Drawer
-                title="Basic Drawer"
+                title="Information"
                 placement="right"
                 onClose={onClose}
                 open={openDrawer}

@@ -3,6 +3,7 @@ import { Tabs, Input } from 'antd';
 import {useParams} from "react-router-dom";
 import Flyer from "./Flyer";
 import {getOwnPoi} from "./utils/data_fetchers";
+import FlyerEditor from "./FlyerEditor";
 
 const { TextArea } = Input;
 
@@ -35,14 +36,18 @@ const EditFlyer = () => {
         {
             key: 'editor',
             label: 'Editor',
-            children: <TextArea rows={10} value={markdown} onChange={handleMarkdownChange} />,
+            children: <FlyerEditor
+                markdown={markdown}
+                setMarkdown={setMarkdown}
+            />,
         },
         {
             key: 'preview',
             label: 'Preview',
-            children: <Flyer  markdown={markdown}
-                              poi={ownPoi}
-                        />,
+            children: <Flyer
+                markdown={markdown}
+                poi={ownPoi}
+            />,
         },
     ];
 
