@@ -6,6 +6,13 @@ export const navigate_options = {
     navigate_apple: false,
 }
 
+export const navigate_texts =    {
+    open_map: 'Open Map',
+    navigate_google: 'Navigate with Google Maps',
+    navigate_sygic: 'Navigate with Sygic',
+    navigate_apple: 'Navigate with Apple Maps',
+};
+
 export const setNavigateOptions = (attributes) => {
     const newPopupOptions = {...navigate_options};
     attributes.forEach((attr) => {
@@ -13,4 +20,4 @@ export const setNavigateOptions = (attributes) => {
             newPopupOptions[attr.key] = attr.value === "1";
         }});
     return newPopupOptions;
-}
+};

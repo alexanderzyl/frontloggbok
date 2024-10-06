@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {navigate_options, setNavigateOptions} from "./utils/poi_attributes";
+import {navigate_options, navigate_texts, setNavigateOptions} from "./utils/poi_attributes";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -24,6 +24,10 @@ function openMap(latitude, longitude) {
 
 function isIOS() {
     return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function isApplePlatform() {
+    return /Mac|iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 
 function openAppleMap(latitude, longitude) {
@@ -74,6 +78,7 @@ const async_store_poi = async (poi_id) => {
 const PoiPopup = ({ point }) => {
     const [iconSource, setIconSource] = useState("");
     const [popupOptions, setPopupOptions] = useState(navigate_options);
+    const [navigateTexts, setNavigateTexts] = useState(navigate_texts);
 
     useEffect(() => {
         if (point === null || point === undefined) return;
@@ -94,13 +99,13 @@ const PoiPopup = ({ point }) => {
             </div>
             <div>
                 {popupOptions.open_map &&
-                    <button onClick={() => openMap(point.latitude, point.longitude)}>Open Map</button>}
+                    <button onClick={() => openMap(point.latitude, point.longitude)}>{navigateTexts.open_map}</button>}
                 {popupOptions.navigate_google &&
-                    <button onClick={() => openGoogle(point.latitude, point.longitude)}>Navigate with Google</button>}
+                    <button onClick={() => openGoogle(point.latitude, point.longitude)}>{navigateTexts.navigate_google}</button>}
                 {popupOptions.navigate_sygic &&
-                <button onClick={() => openSygicMap(point.latitude, point.longitude)}>Navigate with Sygic</button>}
-                {popupOptions.navigate_apple && isIOS() &&
-                <button onClick={() => openAppleMap(point.latitude, point.longitude)}>Navigate with Apple Maps</button>}
+                <button onClick={() => openSygicMap(point.latitude, point.longitude)}>{navigateTexts.navigate_sygic}</button>}
+                {popupOptions.navigate_apple && isApplePlatform() &&
+                <button onClick={() => openAppleMap(point.latitude, point.longitude)}>{navigateTexts.navigate_apple}</button>}
                 {/*<button onClick={() => handleButtonClick("Store")}>Store Poi</button>*/}
             </div>
         </div>
