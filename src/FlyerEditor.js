@@ -48,8 +48,8 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
                         checked={popupOptions.navigate_sygic}
                         onChange={(checked) => handleSwitchChange(checked, 'navigate_sygic')} />
             </Space>
-            <Title level={4}>Edit Information panel </Title>
-            <TextArea rows={10} value={markdown} onChange={handleMarkdownChange} />
+            {/*<Title level={4}>Edit Information panel </Title>*/}
+            {/*<TextArea rows={10} value={markdown} onChange={handleMarkdownChange} />*/}
         </>
     );
 }

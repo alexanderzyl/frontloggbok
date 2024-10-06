@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 import {getAuthHeaders} from "./utils/auth";
 import {message} from "antd";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-const AddNewPoiPopup = ({lngLat, feature, invalidateParent}) => {
-    const [name, setName] = useState('');
-    const [category, setCategory] = useState('');
+const AddNewPoiPopup = ({ lngLat, name, category, invalidateParent }) => {
+    const [poiName, setPoiName] = useState(name);
 
     const handleButtonClick = () => {
         const headers = getAuthHeaders();
         const poiData = {
-            'name': name,
+            'name': poiName,
             'latitude': lngLat.lat,
             'longitude': lngLat.lng,
         };
+        // console.log('Adding new POI:', poiData);
         axios.post(`${backendUrl}/user/add_poi`, poiData, { headers })
             .then((res) => {
                 invalidateParent();
@@ -26,31 +26,14 @@ const AddNewPoiPopup = ({lngLat, feature, invalidateParent}) => {
             });
     };
 
-    useEffect(() => {
-        if (!feature) return;
-        // console.log('Feature properties:', feature.properties);
-        if (feature.properties.name) {
-            setName(feature.properties.name);
-        }
-        else if (feature.properties.name_en) {
-            setName(feature.properties.name_en);
-        }
-        else {
-            setName('Unknown');
-        }
-        if (feature.properties.maki) {
-            setCategory(feature.properties.maki);
-        }
-        else {
-            setCategory('unknown');
-        }
-
-    }, [lngLat, feature]);
-
     return (
         <div>
-            <input type="text" value={name}
-                   onChange={(e) => setName(e.target.value)} placeholder="Name"/>
+            <input
+                type="text"
+                value={poiName}
+                onChange={(e) => setPoiName(e.target.value)}
+                placeholder="Name"
+            />
             <button onClick={handleButtonClick}>Add Point</button>
         </div>
     );

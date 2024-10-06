@@ -64,17 +64,17 @@ const Flyer = ({markdown, poi}) => {
 
     return (
         <div>
-            <Button type="primary" onClick={showDrawer}>
-                Information
-            </Button>
-            <Drawer
-                title="Information"
-                placement="right"
-                onClose={onClose}
-                open={openDrawer}
-            >
-                <ReactMarkdown>{markdown}</ReactMarkdown>
-            </Drawer>
+            {/*<Button type="primary" onClick={showDrawer}>*/}
+            {/*    Information*/}
+            {/*</Button>*/}
+            {/*<Drawer*/}
+            {/*    title="Information"*/}
+            {/*    placement="right"*/}
+            {/*    onClose={onClose}*/}
+            {/*    open={openDrawer}*/}
+            {/*>*/}
+            {/*    <ReactMarkdown>{markdown}</ReactMarkdown>*/}
+            {/*</Drawer>*/}
             <div ref={mapContainer} className="map-container" />
         </div>
     );
