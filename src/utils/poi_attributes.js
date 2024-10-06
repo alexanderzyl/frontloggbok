@@ -21,3 +21,12 @@ export const setNavigateOptions = (attributes) => {
         }});
     return newPopupOptions;
 };
+
+export const readEventDetails = (poi) => {
+    const eventAttribute = poi.attributes.find(attr => attr.key === 'event');
+    if (eventAttribute) {
+        return new Date(eventAttribute.value);
+    } else {
+        return null;
+    }
+}
