@@ -83,7 +83,7 @@ function openBolt(latitude, longitude) {
             window.open(fallbackUrl, '_blank');
             document.body.removeChild(link);
         }
-    }, 500);
+    }, 5000);
 }
 
 
