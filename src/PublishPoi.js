@@ -18,6 +18,7 @@ const PublishPoi = () => {
         ).catch(
             (err) => {
                 console.error('Failed to fetch own poi data:', err);
+                setPoiData(null);
             }
         );
     }
@@ -26,9 +27,11 @@ const PublishPoi = () => {
     }, []);
 
     return (
-        <Flyer  markdown={markdown}
-                poi={poiData}
-        />
+        poiData ? (
+            <Flyer markdown={markdown} poi={poiData} />
+        ) : (
+            <div>The point {shortId} doesn't exist or is not public</div>
+        )
     );
 };
 

@@ -61,11 +61,31 @@ function openUber(latitude, longitude) {
 }
 
 function openBolt(latitude, longitude) {
-    const baseURL = 'https://m.bolt.eu/?';
-    const url = `${baseURL}action=setPickup&destination_latitude=${latitude}&destination_longitude=${longitude}`;
+    const url = `bolt://ride?action=setPickup&destination_latitude=${latitude}&destination_longitude=${longitude}`;
 
-    window.open(url, '_blank');
+    // Fallback to the Bolt website if the app is not installed
+    const fallbackUrl = `https://m.bolt.eu/?action=setPickup&destination_latitude=${latitude}&destination_longitude=${longitude}`;
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    // Try to open the app, and if it fails, open the fallback URL
+    link.click();
+
+    setTimeout(() => {
+        if (document.visibilityState === 'hidden') {
+            // App opened successfully
+            document.body.removeChild(link);
+        } else {
+            // App not found, open the fallback URL
+            window.open(fallbackUrl, '_blank');
+            document.body.removeChild(link);
+        }
+    }, 500);
 }
+
 
 const PoiPopup = ({ point }) => {
     const [iconSource, setIconSource] = useState("");
@@ -119,8 +139,8 @@ const PoiPopup = ({ point }) => {
                 {popupOptions.navigate_apple && isApplePlatform() &&
                     <button
                         onClick={() => openAppleMap(point.latitude, point.longitude)}>{navigateTexts.navigate_apple}</button>}
-                {popupOptions.ride_uber &&
-                    <button onClick={() => openUber(point.latitude, point.longitude)}>{navigateTexts.ride_uber}</button>}
+                {/*{popupOptions.ride_uber &&*/}
+                {/*    <button onClick={() => openUber(point.latitude, point.longitude)}>{navigateTexts.ride_uber}</button>}*/}
                 {popupOptions.ride_bolt &&
                     <button onClick={() => openBolt(point.latitude, point.longitude)}>{navigateTexts.ride_bolt}</button>}
                 {selectedDate &&

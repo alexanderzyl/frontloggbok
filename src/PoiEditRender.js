@@ -89,15 +89,16 @@ class PoiEditRenderer {
                             </>
                         ) : (
                             <>
-                                <Tooltip title="Edit flyer">
-                                    <Button
-                                        icon={<EditOutlined/>}
-                                        onClick={() => navigateToEditFlyer(record.short_id)}
-                                        style={{marginRight: '8px'}}
-                                    />
-                                </Tooltip>
+
                             </>
                         )}
+                        <Tooltip title="Edit flyer">
+                            <Button
+                                icon={<EditOutlined/>}
+                                onClick={() => navigateToEditFlyer(record.short_id)}
+                                style={{marginRight: '8px'}}
+                            />
+                        </Tooltip>
                     </>
                 ),
             },
