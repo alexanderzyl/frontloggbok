@@ -126,6 +126,7 @@ const PoiPopup = ({ point }) => {
                 <img src={iconSource} alt="" />
                 <h2>{point.name}</h2>
                 {selectedDate && <p>Save the date: {moment(selectedDate).format('MMMM Do YYYY')}</p>}
+                <p>LatLng: {point.latitude}, {point.longitude}</p>
             </div>
             <div>
                 {popupOptions.open_map &&
