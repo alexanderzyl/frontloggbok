@@ -4,6 +4,8 @@ export const navigate_options = {
     navigate_google: false,
     navigate_sygic: false,
     navigate_apple: false,
+    ride_uber: false,
+    ride_bolt: false,
 }
 
 export const navigate_texts =    {
@@ -11,6 +13,8 @@ export const navigate_texts =    {
     navigate_google: 'Navigate with Google Maps',
     navigate_sygic: 'Navigate with Sygic',
     navigate_apple: 'Navigate with Apple Maps',
+    ride_uber: 'Ride with Uber',
+    ride_bolt: 'Ride with Bolt',
 };
 
 export const setNavigateOptions = (attributes) => {

@@ -53,6 +53,19 @@ function openSygicMap(latitude, longitude) {
     document.body.removeChild(link);
 }
 
+function openUber(latitude, longitude) {
+    const clientId = 'YOUR_UBER_CLIENT_ID';  // Replace with your Uber Client ID
+    const url = `https://m.uber.com/ul/?client_id=${clientId}&action=setPickup&dropoff[latitude]=${latitude}&dropoff[longitude]=${longitude}`;
+
+    window.open(url, '_blank');
+}
+
+function openBolt(latitude, longitude) {
+    const baseURL = 'https://m.bolt.eu/?';
+    const url = `${baseURL}action=setPickup&destination_latitude=${latitude}&destination_longitude=${longitude}`;
+
+    window.open(url, '_blank');
+}
 
 const PoiPopup = ({ point }) => {
     const [iconSource, setIconSource] = useState("");
@@ -106,7 +119,12 @@ const PoiPopup = ({ point }) => {
                 {popupOptions.navigate_apple && isApplePlatform() &&
                     <button
                         onClick={() => openAppleMap(point.latitude, point.longitude)}>{navigateTexts.navigate_apple}</button>}
-                {selectedDate && <button onClick={() => atcb_action(createCalendarEvent())}>Add to Calendar</button>}
+                {popupOptions.ride_uber &&
+                    <button onClick={() => openUber(point.latitude, point.longitude)}>{navigateTexts.ride_uber}</button>}
+                {popupOptions.ride_bolt &&
+                    <button onClick={() => openBolt(point.latitude, point.longitude)}>{navigateTexts.ride_bolt}</button>}
+                {selectedDate &&
+                    <button onClick={() => atcb_action(createCalendarEvent())}>Add to Calendar</button>}
             </div>
         </div>
     );
