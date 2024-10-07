@@ -60,6 +60,7 @@ const PoiPopup = ({ point }) => {
     const [navigateTexts, setNavigateTexts] = useState(navigate_texts);
     const [selectedDate, setSelectedDate] = useState(null);
 
+
     useEffect(() => {
         if (point === null || point === undefined) return;
         const fetchIcon = async () => {
