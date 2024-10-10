@@ -96,7 +96,7 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
 
     return (
         <>
-            <Title level={4}>Marker buttons</Title>
+            <Title level={4}>{poi?.name}</Title>
             <Space direction="vertical">
                 {Object.entries(popupOptions).map(([key, value]) => value && (
                     <Tag key={key} closable onClose={() => handleTagClose(key)}>

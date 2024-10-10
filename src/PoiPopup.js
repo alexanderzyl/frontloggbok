@@ -155,7 +155,9 @@ const PoiPopup = ({ point }) => {
                 {popupOptions.ride_bolt &&
                     <button onClick={() => openBolt(point.latitude, point.longitude)}>{navigateTexts.ride_bolt}</button>}
                 {startDate &&
-                    <button onClick={() => atcb_action(createCalendarEvent())}>Add to Calendar</button>}
+                    <button onClick={() => atcb_action(createCalendarEvent())}>
+                        Save the dates: {moment(startDate).format('MMMM Do YYYY')} {endDate && ` - ${moment(endDate).format('MMMM Do YYYY')}`}
+                    </button>}
             </div>
         </div>
     );
