@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Select, Space, Tag, Typography, Calendar, Modal} from "antd";
+import {Select, Space, Tag, Typography, Calendar, Modal, Button, message} from "antd";
 import {getAuthHeaders} from "./utils/auth";
 import axios from "axios";
 import moment from 'moment';
@@ -9,14 +9,22 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
     const [popupOptions, setPopupOptions] = useState(navigate_options);
-    const [calendarVisible, setCalendarVisible] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [startCalendarVisible, setStartCalendarVisible] = useState(false);
+    const [startDate, setStartDate] = useState(null);
+    const [endCalendarVisible, setEndCalendarVisible] = useState(false);
+    const [endDate, setEndDate] = useState(null);
 
     useEffect(() => {
         if (poi !== null && poi !== undefined) {
             const newPopupOptions = setNavigateOptions(poi.attributes);
             setPopupOptions(newPopupOptions);
-            setSelectedDate(readEventDetails(poi));
+            const eventDetails = readEventDetails(poi);
+            if (eventDetails) {
+                setStartDate(eventDetails.start_date);
+                if (eventDetails.end_date) {
+                    setEndDate(eventDetails.end_date);
+                }
+            }
         }
     }, [poi]);
 
@@ -39,12 +47,12 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
         const headers = getAuthHeaders();
         if (key === "event") {
             const tomorrowDate = moment().add(1, 'days').toDate();
-            setSelectedDate(tomorrowDate);
+            setStartDate(tomorrowDate);
             const updateData = { 'poi_short_id': poi.short_id, 'key': 'event', 'value': tomorrowDate.toISOString() };
             await axios.put(`${backendUrl}/user/change_poi_attribute`, updateData, { headers })
                 .then(() => {
                     invalidateParent();
-                    setCalendarVisible(true);
+                    setStartCalendarVisible(true);
                 })
                 .catch(error => console.error('Failed to update the group:', error));
         } else {
@@ -58,17 +66,33 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
         }
     };
 
-    const handleDateSelect = async (date) => {
-        setSelectedDate(date.toDate());
+    const handleStartDateSelect = async (date) => {
+        setStartDate(date.toDate());
         const headers = getAuthHeaders();
         const updateData = { 'poi_short_id': poi.short_id, 'key': 'event', 'value': date.toISOString() };
         await axios.put(`${backendUrl}/user/change_poi_attribute`, updateData, { headers })
             .then(() => {
                 invalidateParent();
-                setCalendarVisible(false); // Hide calendar after date is selected
+                setStartCalendarVisible(false); // Hide calendar after date is selected
             })
             .catch(error => console.error('Failed to update the event date:', error));
-    };
+    }
+
+    const handleEndDateSelect = async (date) => {
+        if (date <= startDate) {
+            message.error('End date must be after the start date!');
+            return;
+        }
+        setEndDate(date.toDate());
+        const headers = getAuthHeaders();
+        const updateData = { 'poi_short_id': poi.short_id, 'key': 'event_end', 'value': date.toISOString() };
+        await axios.put(`${backendUrl}/user/change_poi_attribute`, updateData, { headers })
+            .then(() => {
+                invalidateParent();
+                setEndCalendarVisible(false); // Hide calendar after date is selected
+            })
+            .catch(error => console.error('Failed to update the event date:', error));
+    }
 
     return (
         <>
@@ -79,9 +103,17 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
                         {navigate_texts?.[key] || key}
                     </Tag>
                 ))}
-                {selectedDate && (
+                {startDate && (
                     <Tag key="event" closable onClose={() => handleTagClose('event')}>
-                        Add to Calendar (Event Date: {moment(selectedDate).format('YYYY-MM-DD')})
+                        Add to Calendar (Event Date: {moment(startDate).format('YYYY-MM-DD')}
+                        {!endDate && (
+                        <Button type="primary" size="small" onClick={() => setEndCalendarVisible(true)}>
+                            End Date
+                        </Button>)}
+                        {endDate && (
+                            <span> - {moment(endDate).format('YYYY-MM-DD')})</span>
+                        )}
+                        )
                     </Tag>
                 )}
                 <Select
@@ -105,7 +137,7 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
                                 </span>
                             </Select.Option>
                         ))}
-                    {!selectedDate && (
+                    {!startDate && (
                         <Select.Option key="event" value="event">
                             Add to Calendar
                         </Select.Option>
@@ -115,11 +147,25 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
                 {/* Calendar Modal */}
                 <Modal
                     title="Select Event Date"
-                    open={calendarVisible}
-                    onCancel={() => setCalendarVisible(false)}
+                    open={startCalendarVisible}
+                    onCancel={() => setStartCalendarVisible(false)}
                     footer={null}
                 >
-                    <Calendar fullscreen={false} onSelect={handleDateSelect} />
+                    <Calendar fullscreen={false}
+                              onSelect={handleStartDateSelect}
+                              disabledDate={(current) => current <= moment().endOf('day')}
+                    />
+                </Modal>
+                <Modal
+                    title="Select End Date"
+                    open={endCalendarVisible}
+                    onCancel={() => setEndCalendarVisible(false)}
+                    footer={null}
+                >
+                    <Calendar fullscreen={false}
+                              onSelect={handleEndDateSelect}
+                              disabledDate={(current) => current <= moment(startDate).endOf('day')}
+                    />
                 </Modal>
             </Space>
             {/*<Title level={4}>Edit Information panel </Title>*/}

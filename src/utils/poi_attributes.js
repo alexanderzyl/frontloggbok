@@ -28,9 +28,14 @@ export const setNavigateOptions = (attributes) => {
 
 export const readEventDetails = (poi) => {
     const eventAttribute = poi.attributes.find(attr => attr.key === 'event');
+    const eventEndAttribute = poi.attributes.find(attr => attr.key === 'event_end');
+
     if (eventAttribute) {
-        return new Date(eventAttribute.value);
+        return {
+            start_date: new Date(eventAttribute.value),
+            end_date: eventEndAttribute ? new Date(eventEndAttribute.value) : null
+        };
     } else {
         return null;
     }
-}
+};

@@ -91,7 +91,8 @@ const PoiPopup = ({ point }) => {
     const [iconSource, setIconSource] = useState("");
     const [popupOptions, setPopupOptions] = useState(navigate_options);
     const [navigateTexts, setNavigateTexts] = useState(navigate_texts);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
 
     useEffect(() => {
@@ -103,16 +104,23 @@ const PoiPopup = ({ point }) => {
         fetchIcon().then();
         const newPopupOptions = setNavigateOptions(point.attributes);
         setPopupOptions(newPopupOptions);
-        setSelectedDate(readEventDetails(point));
+        const eventDetails = readEventDetails(point);
+        if (eventDetails) {
+            setStartDate(eventDetails.start_date);
+            if(eventDetails.end_date) {
+                setEndDate(eventDetails.end_date);
+            }
+        }
     }, [point]);
 
     const createCalendarEvent = () => {
-        const date = moment(selectedDate).format('YYYY-MM-DD');
+        const start_date = moment(startDate).format('YYYY-MM-DD');
+        const end_date = endDate ? moment(endDate).format('YYYY-MM-DD') : start_date;
         return {
             name: `${point.name}`,
             description: `${point.name}`,
-            startDate: date,
-            endDate: date,
+            startDate: start_date,
+            endDate: end_date,
             location: `${point.latitude}, ${point.longitude}`,
             options: ['Apple', 'Google', 'iCal', 'Microsoft365', 'Outlook.com', 'Yahoo'],
             timeZone: 'UTC'
@@ -125,7 +133,9 @@ const PoiPopup = ({ point }) => {
             <div>
                 <img src={iconSource} alt="" />
                 <h2>{point.name}</h2>
-                {selectedDate && <p>Save the date: {moment(selectedDate).format('MMMM Do YYYY')}</p>}
+                {startDate && <p>Save the dates: {moment(startDate).format('MMMM Do YYYY')}
+                    {endDate && ` - ${moment(endDate).format('MMMM Do YYYY')}`}
+                </p>}
                 <p>LatLng: {point.latitude}, {point.longitude}</p>
             </div>
             <div>
@@ -144,7 +154,7 @@ const PoiPopup = ({ point }) => {
                 {/*    <button onClick={() => openUber(point.latitude, point.longitude)}>{navigateTexts.ride_uber}</button>}*/}
                 {popupOptions.ride_bolt &&
                     <button onClick={() => openBolt(point.latitude, point.longitude)}>{navigateTexts.ride_bolt}</button>}
-                {selectedDate &&
+                {startDate &&
                     <button onClick={() => atcb_action(createCalendarEvent())}>Add to Calendar</button>}
             </div>
         </div>
