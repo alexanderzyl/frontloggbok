@@ -4,8 +4,6 @@ import './Map.css';
 import {createPoiMarker} from "./Markers";
 import {createRoot} from "react-dom/client";
 import PoiPopup from "./PoiPopup";
-import {Button, Drawer} from "antd";
-import ReactMarkdown from "react-markdown";
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -21,7 +19,7 @@ const Flyer = ({markdown, poi}) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
 
-    const [zoom, setZoom] = useState(15);
+    const [zoom, setZoom] = useState(18);
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const showDrawer = () => {

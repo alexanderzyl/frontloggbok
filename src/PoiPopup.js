@@ -133,9 +133,6 @@ const PoiPopup = ({ point }) => {
             <div>
                 <img src={iconSource} alt="" />
                 <h2>{point.name}</h2>
-                {startDate && <p>Save the dates: {moment(startDate).format('MMMM Do YYYY')}
-                    {endDate && ` - ${moment(endDate).format('MMMM Do YYYY')}`}
-                </p>}
                 <p>LatLng: {point.latitude}, {point.longitude}</p>
             </div>
             <div>
