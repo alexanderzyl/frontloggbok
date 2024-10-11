@@ -22,14 +22,6 @@ const Flyer = ({markdown, poi}) => {
     const [zoom, setZoom] = useState(18);
     const [openDrawer, setOpenDrawer] = useState(false);
 
-    const showDrawer = () => {
-        setOpenDrawer(true);
-    }
-
-    const onClose = () => {
-        setOpenDrawer(false);
-    }
-
     useEffect(() => {
         if (map.current) return; // initialize map only once
         setZoom(15);
@@ -51,27 +43,36 @@ const Flyer = ({markdown, poi}) => {
             createPoiMarker(poi).then(
                 (el) => {
                     const popup = createUserPoiPopup(poi);
-                    new mapboxgl.Marker(el)
+                    const marker = new mapboxgl.Marker(el)
                         .setLngLat([poi.longitude, poi.latitude])
                         .setPopup(popup)
                         .addTo(map.current);
+                    popup.addTo(map.current);
+                    marker.addTo(map.current);
+                    return marker;
                 }
             );
         }
     }, [poi]);
 
+    // const startLocation = [-122.431297, 37.773972]; // Example coordinates (San Francisco)
+    // const endLocation = [-118.243683, 34.052235]; // Example coordinates (Los Angeles)
+
     return (
         <div>
-            {/*<Button type="primary" onClick={showDrawer}>*/}
+            {/*<Button type="primary" onClick={() => setOpenDrawer(true)}>*/}
             {/*    Information*/}
             {/*</Button>*/}
             {/*<Drawer*/}
             {/*    title="Information"*/}
             {/*    placement="right"*/}
-            {/*    onClose={onClose}*/}
+            {/*    onClose={() => setOpenDrawer(false)}*/}
             {/*    open={openDrawer}*/}
             {/*>*/}
-            {/*    <ReactMarkdown>{markdown}</ReactMarkdown>*/}
+                {
+                    // <DirectionsAPI start={startLocation} end={endLocation} />
+                    /*<ReactMarkdown>{markdown}</ReactMarkdown>*/
+                }
             {/*</Drawer>*/}
             <div ref={mapContainer} className="map-container" />
         </div>
