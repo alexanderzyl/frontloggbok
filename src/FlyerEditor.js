@@ -4,6 +4,7 @@ import {getAuthHeaders} from "./utils/auth";
 import axios from "axios";
 import moment from 'moment';
 import {navigate_options, navigate_texts, readEventDetails, setNavigateOptions} from "./utils/poi_attributes";
+import {useNavigate} from "react-router-dom";
 const { Title } = Typography;
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -55,7 +56,8 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
                     setStartCalendarVisible(true);
                 })
                 .catch(error => console.error('Failed to update the group:', error));
-        } else {
+        }
+        else {
             const updateData = { 'poi_short_id': poi.short_id, 'key': key, 'value': '1' };
             await axios.put(`${backendUrl}/user/change_poi_attribute`, updateData, { headers })
                 .then(() => {
@@ -94,6 +96,15 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
             .catch(error => console.error('Failed to update the event date:', error));
     }
 
+    const navigate = useNavigate();
+    const openLiveETA = () => {
+        navigate(`/locateme/${poi.short_id}`);
+    }
+
+    const render_buttons = {
+        live_eta: <Button type="primary" size="small" onClick={() => openLiveETA()}>Update Location</Button>
+    }
+
     return (
         <>
             <Title level={4}>{poi?.name}</Title>
@@ -101,6 +112,7 @@ const FlyerEditor = ({markdown, setMarkdown, poi, invalidateParent}) => {
                 {Object.entries(popupOptions).map(([key, value]) => value && (
                     <Tag key={key} closable onClose={() => handleTagClose(key)}>
                         {navigate_texts?.[key] || key}
+                        {render_buttons?.[key] || null}
                     </Tag>
                 ))}
                 {startDate && (

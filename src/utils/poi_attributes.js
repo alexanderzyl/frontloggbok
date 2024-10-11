@@ -6,6 +6,7 @@ export const navigate_options = {
     navigate_apple: false,
     // ride_uber: false,
     ride_bolt: false,
+    live_eta: false,
 }
 
 export const navigate_texts =    {
@@ -15,6 +16,7 @@ export const navigate_texts =    {
     navigate_apple: 'Navigate with Apple Maps',
     // ride_uber: 'Ride with Uber',
     ride_bolt: 'Ride with Bolt',
+    live_eta: 'Live ETA',
 };
 
 export const setNavigateOptions = (attributes) => {

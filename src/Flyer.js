@@ -55,9 +55,6 @@ const Flyer = ({markdown, poi}) => {
         }
     }, [poi]);
 
-    // const startLocation = [-122.431297, 37.773972]; // Example coordinates (San Francisco)
-    // const endLocation = [-118.243683, 34.052235]; // Example coordinates (Los Angeles)
-
     return (
         <div>
             {/*<Button type="primary" onClick={() => setOpenDrawer(true)}>*/}

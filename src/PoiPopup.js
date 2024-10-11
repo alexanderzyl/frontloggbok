@@ -2,6 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {navigate_options, navigate_texts, readEventDetails, setNavigateOptions} from "./utils/poi_attributes";
 import { atcb_action } from 'add-to-calendar-button';
 import moment from 'moment';
+import ETA from "./ETA";
+import {getNonAuthHeaders} from "./utils/auth";
+import axios from "axios";
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 async function getIcon() {
     let iconModule = { default: '../public/icons/star.png' };
@@ -93,17 +98,21 @@ const PoiPopup = ({ point }) => {
     const [navigateTexts, setNavigateTexts] = useState(navigate_texts);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
 
 
     useEffect(() => {
         if (point === null || point === undefined) return;
+        console.log(point);
         const fetchIcon = async () => {
             const icon = await getIcon();
             setIconSource(icon);
         };
         fetchIcon().then();
         const newPopupOptions = setNavigateOptions(point.attributes);
-        setPopupOptions(newPopupOptions);
+        if (newPopupOptions.live_eta) {
+            getUserLocation();
+        }
         const eventDetails = readEventDetails(point);
         if (eventDetails) {
             setStartDate(eventDetails.start_date);
@@ -111,6 +120,7 @@ const PoiPopup = ({ point }) => {
                 setEndDate(eventDetails.end_date);
             }
         }
+        setPopupOptions(newPopupOptions);
     }, [point]);
 
     const createCalendarEvent = () => {
@@ -127,6 +137,17 @@ const PoiPopup = ({ point }) => {
         };
     }
 
+    const getUserLocation = () => {
+        const headers = getNonAuthHeaders();
+        const shortId = point.short_id;
+        axios.get(`${backendUrl}/locate/get/${shortId}`, { headers })
+            .then((response) => {
+                const data = response.data;
+                setUserLocation({ latitude: data.latitude, longitude: data.longitude });
+            })
+            .catch(error => console.error('Failed to get user location:', error));
+    };
+
 
     return (
         <div className="PoiInfo">
@@ -134,8 +155,12 @@ const PoiPopup = ({ point }) => {
                 <img src={iconSource} alt="" />
                 <h2>{point.name}</h2>
                 <p>LatLng: {point.latitude}, {point.longitude}</p>
+
             </div>
             <div>
+                {popupOptions.live_eta && userLocation &&
+                    <ETA start={[userLocation.longitude, userLocation.latitude]} end={[point.longitude, point.latitude]} />
+                }
                 {popupOptions.open_map &&
                     <button onClick={() => openMap(point.latitude, point.longitude)}>{navigateTexts.open_map}</button>}
                 {popupOptions.navigate_google &&

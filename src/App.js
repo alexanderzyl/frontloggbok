@@ -5,6 +5,7 @@ import PublishPoi from "./PublishPoi";
 import User from "./User";
 import withLogin from "./Login";
 import EditFlyer from "./EditFlyer";
+import LocationTracker from "./LocationTracker";
 
 const App = () => {
     useEffect(() => {
@@ -17,6 +18,7 @@ const App = () => {
 
     const WLUser = withLogin(User);
     const WLEditFlyer = withLogin(EditFlyer);
+    const WLLocationTracker = withLogin(LocationTracker);
 
     return (
         <Router>
@@ -24,6 +26,7 @@ const App = () => {
                 <Route path="/" element={<WLUser />} />
                 <Route path="/p/:shortId" element={<PublishPoi />} />
                 <Route path="/edit/:shortId" element={<WLEditFlyer />} />
+                <Route path="/locateme/:shortId" element={<WLLocationTracker />} />
                 {/*<Route path="/g/:shortId" element={<PublishGroup />} />*/}
                 {/*<Route path={"/poiingroup/:shortId"} element={<WLPoiTable getPois={getOwnGroupPois} />} />*/}
                 {/*<Route path={"/editgroup/:shortId"} element={<WLEditGroup />} />*/}
